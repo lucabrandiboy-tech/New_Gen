@@ -24,13 +24,13 @@ I am a solo developer with **no coding experience**. You write all the code. I d
 
 ### Teach me to draw (required)
 I will draw every sprite myself except roads. Before I start on art, and whenever you introduce a new sprite I need to draw, **teach me** — don't draw it for me:
-- How to draw **3/4 top-down** perspective at **64×64 px per tile**: where the "front face" goes, how tall walls should be relative to the roof, a consistent light direction (pick one, e.g. top-left, and enforce it), how to show depth with shading, and how a 1×1 vs 3×3 vs 15×15 building should look.
+- How to draw **3/4 top-down** perspective at **128×128 px per tile**: where the "front face" goes, how tall walls should be relative to the roof, a consistent light direction (pick one, e.g. top-left, and enforce it), how to show depth with shading, and how a 1×1 vs 3×3 vs 15×15 building should look.
 - Recommend tools (Aseprite / LibreSprite / Piskel / Krita) and walk me through canvas setup, grid, export settings (PNG, transparency), and sprite-sheet layout for animations.
 - For **every sprite** the game needs, write a short entry in `/Docs/ART_GUIDE.md`: filename, exact pixel size, number of frames, which states are needed (idle, working, damaged, destroyed), angle, light direction, and what it should communicate at a glance.
 - Explain how I put PNGs into the repo with GitHub Desktop, and set up **Git LFS** for PNGs.
 
 ### Art pipeline you must build
-- An `AssetPostprocessor` that auto-imports everything in `Assets/Art/Sprites/`: Point (no filter), no compression, Pixels Per Unit = 64, auto-slice sprite sheets by naming convention.
+- An `AssetPostprocessor` that auto-imports everything in `Assets/Art/Sprites/`: Point (no filter), no compression, Pixels Per Unit = 128, auto-slice sprite sheets by naming convention.
 - Strict naming convention, e.g. `bld_<name>_<state>.png`, `item_<name>.png`, `unit_<faction>_<name>_<anim>.png`, `cell_<tier>.png`. Document it in ART_GUIDE.md.
 - Generate flat-color **placeholder** sprites with the exact expected filenames and sizes so the game is playable before my art exists. When my real file appears in `Sprites/`, the game uses it instead of the placeholder automatically — no code changes.
 - Working-state glow should use a **shader/2D light**, not extra frames, to save me drawing time.
@@ -53,7 +53,7 @@ I will draw every sprite myself except roads. Before I start on art, and wheneve
 - **Unity 6 LTS**, **URP with 2D Renderer** (2D lights for glow, data center heat, etc.).
 - **Platform:** Windows / Steam first. Consoles maybe later — keep input abstracted.
 - **Input:** Unity New Input System, **keyboard + mouse only for now**. Rebindable keys.
-- **Camera:** **3/4 top-down**, 64×64 px tiles.
+- **Camera:** **3/4 top-down**, 128×128 px tiles.
 - **Co-op:** 2–4 players, Steam friend invites (Steam relay). Netcode library is your choice — explain your pick in one paragraph. Build single-player core first, **but architect from day one so co-op can be added** (simulation separated from visuals, server-authoritative or deterministic — your call, explain it).
 - **Data-driven content** (items, recipes, buildings, tech, factions) so mods are possible later. Format is your choice (ScriptableObjects vs JSON) — explain.
 - **Performance target (assumed):** 60 FPS on a mid-range PC with 10,000+ active entities. Warn me early if a design choice threatens this.
@@ -274,3 +274,4 @@ Newest at the bottom. These override anything earlier in this file.
 | 2026-11-09 | Brain-upload soft-lock replaced: Brain Core **self-builds one basic drone** when the player has none. Timer/cost TBD (ask me). |
 | 2026-11-09 | Art tool: **Pixelorama** (free). Upload via GitHub Desktop + Git LFS. |
 | 2026-11-09 | Timeline: at least a year, no rushing. Quality over speed. |
+| 2026-11-09 | **Tile size = 128×128 px** (was 64). Pixels Per Unit = 128. Owner chose this knowing it's ~4× the pixels per drawing. Proposed building rule scales with it: height = footprint + 64 px (half a tile). |

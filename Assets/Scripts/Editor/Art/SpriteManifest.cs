@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NewGen.Art;
 using UnityEngine;
 
 namespace NewGen.EditorTools.Art
@@ -34,8 +35,8 @@ namespace NewGen.EditorTools.Art
             public string FileName => frames > 1 ? $"{name}_{frames}f.png" : $"{name}.png";
         }
 
-        const int T = 64;              // one tile
-        const int RoofOverhang = 32;   // extra height above the footprint for 3/4 view (PROPOSED)
+        const int T = SpriteNaming.PixelsPerUnit; // one tile (128 px)
+        const int RoofOverhang = T / 2; // extra height above the footprint for 3/4 view (PROPOSED)
         static readonly string[] BuildingStates = { "idle", "damaged", "destroyed" };
 
         public static IReadOnlyList<Spec> All => all ??= Build();
@@ -45,7 +46,7 @@ namespace NewGen.EditorTools.Art
         {
             var list = new List<Spec>();
 
-            // Terrain (64x64, tile seamlessly)
+            // Terrain (1 tile, must tile seamlessly)
             foreach (string n in new[] { "tile_snow_01", "tile_ice_01", "tile_rock_01" })
                 list.Add(new Spec(n, Kind.Terrain, T, T));
 
@@ -55,10 +56,10 @@ namespace NewGen.EditorTools.Art
 
             // Item icons (inventory + items flying in tubes)
             foreach (string n in new[] { "item_iron_ore", "item_copper_ore", "item_coal", "item_stone", "item_ice", "item_iron_plate", "item_copper_plate" })
-                list.Add(new Spec(n, Kind.Item, 32, 32));
+                list.Add(new Spec(n, Kind.Item, T / 2, T / 2));
 
             // Data cells
-            list.Add(new Spec("cell_resource", Kind.Cell, 32, 32));
+            list.Add(new Spec("cell_resource", Kind.Cell, T / 2, T / 2));
 
             // Player (pre-upload human body). Side views are mirrored in code for left/right.
             foreach (string dir in new[] { "down", "up", "side" })

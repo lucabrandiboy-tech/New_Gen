@@ -14,7 +14,7 @@ namespace NewGen.Art
         /// <summary>Generated flat-colour placeholders. Safe to regenerate.</summary>
         public const string PlaceholderFolder = "Assets/Art/_Placeholders";
 
-        public const int PixelsPerUnit = 64;
+        public const int PixelsPerUnit = 128;
 
         // "unit_player_walk_4f" -> 4 frames. Must be the very end of the name.
         static readonly Regex FrameSuffix = new Regex(@"_(\d+)f$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
