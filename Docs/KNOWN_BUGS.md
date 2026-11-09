@@ -3,12 +3,15 @@
 > Always current. Nothing in this project has been tested in Unity yet unless marked "owner-tested".
 
 ## Unfinished
-- No Unity project files yet (Assets/Packages/ProjectSettings). Owner needs to create the project — see README "First-time setup".
-- No code written yet.
-- Art import pipeline + placeholders: not started (Milestone 1, step 2).
+- Art pipeline (step 2): written but **never compiled or run** — Claude has no Unity. Untested parts: auto-slicing of `_Nf` sheets (uses Unity's Sprite Data Provider API; most likely spot for a compile error or warning), registry auto-rebuild.
+- Sprite list/sizes are a proposal, not approved.
+- `SpriteGalleryTest` is a throwaway test tool.
+- Working-state glow (2D light) not built yet — comes with the building system.
+- Old placeholders removed from the manifest are reported in the Console but not deleted automatically.
 
 ## Bugs
 - None recorded yet (nothing to test).
 
 ## Warnings
-- GitHub repo is currently **public**. Spec says private. Change in GitHub → Settings → General → Danger Zone → Change visibility.
+- GitHub repo New_Gen may still be **public** — confirm it's private.
+- Extra repo `New_Generation` was created by Unity Hub; unused. Owner can delete it.

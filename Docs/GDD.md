@@ -47,6 +47,9 @@ Rough save size after 100+ hours: tens of MB, mostly buildings/entities — not 
 ## 5. Art
 - 64×64 px tiles, 3/4 top-down, Pixels Per Unit 64, point filtering. [DECIDED]
 - Tool: Pixelorama. Pipeline and naming: see `ART_GUIDE.md`. [DECIDED]
+- Import pipeline: PNGs in `Assets/Art/Sprites` (owner) and `Assets/Art/_Placeholders` (generated) are auto-imported (point filter, uncompressed, 64 PPU). `_<N>f` suffix = N-frame horizontal sheet. A sprite registry maps names → sprites; owner art overrides placeholders with no code changes. Buildings pivot bottom-left, everything else centre. [BUILT — not yet owner-tested]
+- Sprite list & sizes (incl. building height = footprint + 32 px, items 32×32, player 3 directions with mirrored side): [PENDING approval]
+- Working-state glow via 2D light: [DECIDED — built later with the building system]
 
 ## 6. Open questions for the owner
 - 15 largest faction names · Data Cell tier codenames · tier × branch research chart · story/mystery · infinite research · reparation pricing · terrain art before Earth pre-fill · Earth map design · netcode/data-format choices · Brain Core drone timer/cost.

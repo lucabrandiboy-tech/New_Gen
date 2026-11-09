@@ -34,19 +34,25 @@ Every time:
 ---
 
 ## 3. Naming convention (strict — the game finds art by name)
-All lowercase, underscores, no spaces.
+All lowercase, underscores, no spaces, **PNG only**.
 
 | Kind | Pattern | Example |
 |---|---|---|
 | Building | `bld_<name>_<state>.png` | `bld_smelter_idle.png` |
 | Item | `item_<name>.png` | `item_iron_ore.png` |
-| Unit | `unit_<faction>_<name>_<anim>_<N>f.png` | `unit_machine_scoutbot_walk_4f.png` |
+| Unit | `unit_<who>_<anim>_<direction>[_<N>f].png` | `unit_player_walk_down_4f.png` |
 | Data cell | `cell_<tier>.png` | `cell_resource.png` |
 | Terrain | `tile_<biome>_<variant>.png` | `tile_ice_01.png` |
+| Resource patch | `res_<resource>_<variant>.png` | `res_iron_01.png` |
 
-Building states: `idle`, `damaged`, `destroyed`. (**Working** glow is done with a 2D light — no extra drawing.)
+- Building states: `idle`, `damaged`, `destroyed`. (**Working** glow is done with a 2D light — no extra drawing.)
+- **Animations:** end the name with `_<N>f` where N = number of frames, e.g. `_4f`. The image must be exactly N frames wide in one row. The game slices it automatically.
+- If your file has the same name as a placeholder, **yours replaces it automatically**. You can put files in subfolders inside `Sprites/` if you like — only the file name matters.
 
----
+### What the import pipeline does to your files
+Nothing is changed in the PNG itself. Unity just imports it as: pixel-perfect (no blur), no compression, 64 px = 1 tile.
+- **Buildings** (`bld_...`) are anchored at their **bottom-left corner** = the bottom-left tile of their footprint. Anything taller than the footprint sticks up into the tiles behind it (that's the 3/4 roof).
+- Everything else is anchored at its **centre**.
 
 ## 4. Drawing in 3/4 top-down
 Imagine looking down at about 45°. You see the **roof** (top) and the **front (south) wall**, nothing else.
@@ -74,9 +80,30 @@ Imagine looking down at about 45°. You see the **roof** (top) and the **front (
 
 ---
 
-## 5. Sprite list
-_Filled in as each feature is designed. Each entry: filename · pixel size · frames · states · what it must communicate._
+## 5. Sprite list — ⚠ PROPOSED, NOT APPROVED
+**Don't start drawing these yet** (practice pieces are fine). The sizes below are my proposal and need your OK — they're also what the placeholders use right now. Light always from the top-left.
 
-| File | Size | Frames | States | Notes |
-|---|---|---|---|---|
-| _(added with Milestone 1, step 2)_ | | | | |
+**Building height rule (proposed):** sprite width = footprint × 64; sprite height = footprint × 64 **+ 32 px** for the roof/upper wall in 3/4 view.
+
+| File | Size (px) | Frames | Notes / what it must show at a glance |
+|---|---|---|---|
+| `tile_snow_01` | 64×64 | 1 | Snow ground. Must tile seamlessly (edges match). |
+| `tile_ice_01` | 64×64 | 1 | Blue ice ground. Seamless. |
+| `tile_rock_01` | 64×64 | 1 | Exposed dark rock. Seamless. |
+| `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01` | 64×64 | 1 | Ore drawn **on top of** terrain (transparent around it). Colour must say which ore instantly. |
+| `item_iron_ore`, `item_copper_ore`, `item_coal`, `item_stone`, `item_ice`, `item_iron_plate`, `item_copper_plate` | 32×32 | 1 | Inventory icons, also shown flying through tubes. Bold silhouette. |
+| `cell_resource` | 32×32 | 1 | Tier-1 Data Cell. Should look like tech, not a rock. |
+| `unit_player_idle_down` / `_up` / `_side` | 64×64 | 1 | Player in cold suit. `side` faces right; the game mirrors it for left. |
+| `unit_player_walk_down_4f` / `_up_4f` / `_side_4f` | 256×64 | 4 | Walk cycle, 4 frames of 64×64. |
+| `bld_crashpod_<state>` | 192×224 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
+| `bld_drill_<state>` | 128×160 | 1 | 2×2. Mining drill. |
+| `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. |
+| `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
+| `bld_encoder_<state>` | 128×160 | 1 | 2×2. Data Cell encoder. |
+| `bld_datacenter_l1_<state>` | 256×288 | 1 | 4×4. Level 1 Data Center. Important target — should look valuable. |
+| `bld_chest_<state>` | 64×96 | 1 | 1×1. Storage chest. |
+| `bld_tube_straight`, `bld_tube_corner` | 64×64 | 1 | Flat, seen from above. Straight runs left↔right; corner connects left↔down. Game rotates them. |
+| `bld_wire_straight`, `bld_wire_corner` | 64×64 | 1 | Same as tubes, for data-wires. |
+| `bld_arm` | 64×64 | 1 | Arm, pointing up. Game rotates it. (Animation later.) |
+
+`<state>` = `idle`, `damaged`, `destroyed` → 3 files per building.
