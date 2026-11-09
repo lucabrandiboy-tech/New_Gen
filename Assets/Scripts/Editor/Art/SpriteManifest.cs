@@ -9,7 +9,7 @@ namespace NewGen.EditorTools.Art
     /// The placeholder generator makes one flat-colour PNG per entry.
     /// Must stay in sync with the sprite list in Docs/ART_GUIDE.md.
     ///
-    /// STATUS: PROPOSED (2026-11-09). Sizes/list not yet approved by the owner.
+    /// STATUS: APPROVED by owner 2026-11-09.
     /// </summary>
     public static class SpriteManifest
     {

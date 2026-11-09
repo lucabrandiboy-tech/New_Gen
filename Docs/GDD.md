@@ -48,8 +48,8 @@ Rough save size after 100+ hours: tens of MB, mostly buildings/entities — not 
 - **128×128 px tiles**, 3/4 top-down, Pixels Per Unit 128, point filtering. [DECIDED 2026-11-09, changed from 64]
   - Note: 15×15 buildings are ~1920 px wide; sprite memory is ~4× the 64 px plan. Fine for now; revisit if VRAM becomes a problem.
 - Tool: Pixelorama. Pipeline and naming: see `ART_GUIDE.md`. [DECIDED]
-- Import pipeline: PNGs in `Assets/Art/Sprites` (owner) and `Assets/Art/_Placeholders` (generated) are auto-imported (point filter, uncompressed, 128 PPU). `_<N>f` suffix = N-frame horizontal sheet. A sprite registry maps names → sprites; owner art overrides placeholders with no code changes. Buildings pivot bottom-left, everything else centre. [BUILT — not yet owner-tested]
-- Sprite list & sizes (incl. building height = footprint + 64 px, items 64×64, player 3 directions with mirrored side): [PENDING approval]
+- Import pipeline: PNGs in `Assets/Art/Sprites` (owner) and `Assets/Art/_Placeholders` (generated) are auto-imported (point filter, uncompressed, 128 PPU). `_<N>f` suffix = N-frame horizontal sheet. A sprite registry maps names → sprites; owner art overrides placeholders with no code changes. Buildings pivot bottom-left, everything else centre. [BUILT — owner-tested 2026-11-09: compiles, placeholders + override + animation slicing work]
+- Sprite list & sizes (building height = footprint + 64 px, items 64×64, player 3 directions with mirrored side): [DECIDED 2026-11-09]
 - Working-state glow via 2D light: [DECIDED — built later with the building system]
 
 ## 6. Open questions for the owner

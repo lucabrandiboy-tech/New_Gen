@@ -274,4 +274,5 @@ Newest at the bottom. These override anything earlier in this file.
 | 2026-11-09 | Brain-upload soft-lock replaced: Brain Core **self-builds one basic drone** when the player has none. Timer/cost TBD (ask me). |
 | 2026-11-09 | Art tool: **Pixelorama** (free). Upload via GitHub Desktop + Git LFS. |
 | 2026-11-09 | Timeline: at least a year, no rushing. Quality over speed. |
-| 2026-11-09 | **Tile size = 128×128 px** (was 64). Pixels Per Unit = 128. Owner chose this knowing it's ~4× the pixels per drawing. Proposed building rule scales with it: height = footprint + 64 px (half a tile). |
+| 2026-11-09 | **Tile size = 128×128 px** (was 64). Pixels Per Unit = 128. Owner chose this knowing it's ~4× the pixels per drawing. |
+| 2026-11-09 | **Approved:** building sprite = footprint × 128 wide, footprint × 128 + 64 px tall. Full M1 sprite list in ART_GUIDE §5 approved. Art pipeline owner-tested and working. |

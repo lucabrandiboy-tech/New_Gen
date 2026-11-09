@@ -80,10 +80,10 @@ Imagine looking down at about 45°. You see the **roof** (top) and the **front (
 
 ---
 
-## 5. Sprite list — ⚠ PROPOSED, NOT APPROVED
-**Don't start drawing these yet** (practice pieces are fine). The sizes below are my proposal and need your OK — they're also what the placeholders use right now. Light always from the top-left.
+## 5. Sprite list — APPROVED 2026-11-09
+These sizes are approved and match the placeholders. Light always from the top-left.
 
-**Building height rule (proposed):** sprite width = footprint × 128; sprite height = footprint × 128 **+ 64 px** for the roof/upper wall in 3/4 view.
+**Building height rule (approved):** sprite width = footprint × 128; sprite height = footprint × 128 **+ 64 px** for the roof/upper wall in 3/4 view.
 
 | File | Size (px) | Frames | Notes / what it must show at a glance |
 |---|---|---|---|
