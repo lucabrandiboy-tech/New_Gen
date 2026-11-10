@@ -1,21 +1,21 @@
 # Art Guide
 
 You draw everything except roads. This guide teaches the basics and lists every sprite the game needs.
-**Golden rules:** 128×128 px per tile · 3/4 top-down view · light from the **top-left**, always · transparent background · PNG.
+**Golden rules:** 64×64 px per tile · 3/4 top-down view · light from the **top-left**, always · transparent background · PNG.
 
 ---
 
 ## 1. Tool: Pixelorama (free)
 1. Download from **pixelorama.org** (or Steam/itch.io, free). Install.
-2. **New canvas:** File → New. Width/height = the sprite's size from the list below (e.g. 128×128 for terrain). Transparent background ON.
-3. **Grid:** Edit → Preferences → Canvas → Grid: 128×128 (tile grid). Add a second "pixel grid" at 1×1 for zoomed-in work. Toggle with View → Show Grid.
+2. **New canvas:** File → New. Width/height = the sprite's size from the list below (e.g. 64×64 for a 1×1 tile). Transparent background ON.
+3. **Grid:** Edit → Preferences → Canvas → Grid: 64×64 (tile grid). Add a second "pixel grid" at 1×1 for zoomed-in work. Toggle with View → Show Grid.
 4. **Zoom** in a lot (800%+). Use the **Pencil** tool (1 px), never soft brushes. Turn anti-aliasing OFF.
 5. **Palette:** keep it small (≈32 colours for the whole game). We'll create a shared palette file later so all your art matches.
 6. **Save** your work file as `.pxo` (stays on your PC, not uploaded).
 7. **Export:** File → Export → PNG. Scale **1×** (never upscale). Transparent background. Use the exact filename from the list.
 
 ### Animations (sprite sheets)
-Draw each frame in Pixelorama's timeline. Export → **Spritesheet**, **1 row**, frames left→right, no padding. Example: 4 frames of 128×128 → one 512×128 PNG. The filename says the frame count: `unit_player_walk_4f.png`.
+Draw each frame in Pixelorama's timeline. Export → **Spritesheet**, **1 row**, frames left→right, no padding. Example: 4 frames of 64×64 → one 256×64 PNG. The filename says the frame count: `unit_player_walk_4f.png`.
 
 ---
 
@@ -29,7 +29,7 @@ Every time:
 2. GitHub Desktop → write a summary ("smelter art") → **Commit to main** → **Push origin**.
 3. Next session I pull it. The game uses your file instead of the placeholder automatically.
 
-**Never** put files in `Assets/Art/_Placeholders/` — that folder is mine and gets regenerated.
+**Never** put files in `Assets/Art/_Placeholders/` or `Assets/Art/Generated/` — those folders are mine. `_Placeholders` = flat colour stand-ins; `Generated` = finished art I made (terrain).
 
 ---
 
@@ -50,7 +50,7 @@ All lowercase, underscores, no spaces, **PNG only**.
 - If your file has the same name as a placeholder, **yours replaces it automatically**. You can put files in subfolders inside `Sprites/` if you like — only the file name matters.
 
 ### What the import pipeline does to your files
-Nothing is changed in the PNG itself. Unity just imports it as: pixel-perfect (no blur), no compression, 128 px = 1 tile.
+Nothing is changed in the PNG itself. Unity just imports it as: pixel-perfect (no blur), no compression, 64 px = 1 tile.
 - **Buildings** (`bld_...`) are anchored at their **bottom-left corner** = the bottom-left tile of their footprint. Anything taller than the footprint sticks up into the tiles behind it (that's the 3/4 roof).
 - Everything else is anchored at its **centre**.
 
@@ -66,44 +66,55 @@ Imagine looking down at about 45°. You see the **roof** (top) and the **front (
   +----------------+   <- bottom edge sits on the tile's bottom
 ```
 
-- **Footprint:** a building of N×N tiles = N×128 px wide. It can be **taller** than N×128 (roof/chimneys overhang upward into the tile behind). Bottom edge always lines up with the bottom of its footprint.
+- **Footprint:** a building of N×N tiles = N×64 px wide. It can be **taller** than N×64 (roof/chimneys overhang upward into the tile behind). Bottom edge always lines up with the bottom of its footprint.
 - **Wall height:** front wall ≈ **1/3** of the visible height for normal buildings; tall structures (towers, data centers) can go to 1/2.
 - **Light from top-left:** roof = base colour, left/top edges highlighted 1 shade lighter, front wall 1–2 shades darker, right side darkest. **Shadow** falls to the bottom-right (a simple dark shape, ~30% opacity is done by the game later — don't draw shadows on the ground for now).
 - **Outline:** 1 px dark outline (not pure black — darkest palette colour) around the whole object. Makes it readable on any terrain.
 - **Size scaling:**
-  - **1×1 (128 px):** one clear shape, 2–3 details max. Must read at a glance.
-  - **3×3 (384 px):** main body + 2–3 distinct parts (chimney, tank, panel).
-  - **15×15 (1920 px):** a complex. Treat it as several smaller buildings joined on one base slab. Repeat textures (vents, panels) to save time.
+  - **1×1 (64 px):** one clear shape, 2–3 details max. Must read at a glance.
+  - **3×3 (192 px):** main body + 2–3 distinct parts (chimney, tank, panel).
+  - **15×15 (960 px):** a complex. Treat it as several smaller buildings joined on one base slab. Repeat textures (vents, panels) to save time.
 - **Readability test:** zoom out to 100%. If you can't tell what it is in 1 second, simplify.
 
-**Practice exercise:** draw a 128×128 grey metal crate in 3/4 view with top-left lighting. Then a 256×320 (2×2 building) "smelter" (box + chimney). Upload them as `practice_crate.png` / `practice_smelter.png` into `Assets/Art/Sprites/` and I'll give feedback.
+**Practice exercise:** draw a 64×64 grey metal crate in 3/4 view with top-left lighting. Then a 128×160 (2×2 building) "smelter" (box + chimney). Upload them as `practice_crate.png` / `practice_smelter.png` into `Assets/Art/Sprites/` and I'll give feedback.
 
 ---
 
 ## 5. Sprite list — APPROVED 2026-11-09
 These sizes are approved and match the placeholders. Light always from the top-left.
 
-**Building height rule (approved):** sprite width = footprint × 128; sprite height = footprint × 128 **+ 64 px** for the roof/upper wall in 3/4 view.
+**Building height rule (approved):** sprite width = footprint × 64; sprite height = footprint × 64 **+ 32 px** for the roof/upper wall in 3/4 view.
 
 | File | Size (px) | Frames | Notes / what it must show at a glance |
 |---|---|---|---|
-| `tile_snow_01` | 128×128 | 1 | Snow ground. Must tile seamlessly (edges match). |
-| `tile_ice_01` | 128×128 | 1 | Blue ice ground. Seamless. |
-| `tile_rock_01` | 128×128 | 1 | Exposed dark rock. Seamless. |
-| `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01` | 128×128 | 1 | Ore drawn **on top of** terrain (transparent around it). Colour must say which ore instantly. |
-| `item_iron_ore`, `item_copper_ore`, `item_coal`, `item_stone`, `item_ice`, `item_iron_plate`, `item_copper_plate` | 64×64 | 1 | Inventory icons, also shown flying through tubes. Bold silhouette. |
-| `cell_resource` | 64×64 | 1 | Tier-1 Data Cell. Should look like tech, not a rock. |
-| `unit_player_idle_down` / `_up` / `_side` | 128×128 | 1 | Player in cold suit. `side` faces right; the game mirrors it for left. |
-| `unit_player_walk_down_4f` / `_up_4f` / `_side_4f` | 512×128 | 4 | Walk cycle, 4 frames of 128×128. |
-| `bld_crashpod_<state>` | 384×448 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
-| `bld_drill_<state>` | 256×320 | 1 | 2×2. Mining drill. |
-| `bld_smelter_<state>` | 256×320 | 1 | 2×2. Furnace, should look hot. |
-| `bld_assembler_<state>` | 384×448 | 1 | 3×3. Assembler. |
-| `bld_encoder_<state>` | 256×320 | 1 | 2×2. Data Cell encoder. |
-| `bld_datacenter_l1_<state>` | 512×576 | 1 | 4×4. Level 1 Data Center. Important target — should look valuable. |
-| `bld_chest_<state>` | 128×192 | 1 | 1×1. Storage chest. |
-| `bld_tube_straight`, `bld_tube_corner` | 128×128 | 1 | Flat, seen from above. Straight runs left↔right; corner connects left↔down. Game rotates them. |
-| `bld_wire_straight`, `bld_wire_corner` | 128×128 | 1 | Same as tubes, for data-wires. |
-| `bld_arm` | 128×128 | 1 | Arm, pointing up. Game rotates it. (Animation later.) |
+| `tile_snow_01`…`_64`, `tile_ice_01`…`_64`, `tile_rock_01`…`_64` | 64×64 | 1 | **Made by Claude** (see below) — you don't need to draw these. |
+| `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01` | 64×64 | 1 | Ore drawn **on top of** terrain (transparent around it). Colour must say which ore instantly. |
+| `item_iron_ore`, `item_copper_ore`, `item_coal`, `item_stone`, `item_ice`, `item_iron_plate`, `item_copper_plate` | 32×32 | 1 | Inventory icons, also shown flying through tubes. Bold silhouette. |
+| `cell_resource` | 32×32 | 1 | Tier-1 Data Cell. Should look like tech, not a rock. |
+| `unit_player_idle_down` / `_up` / `_side` | 64×64 | 1 | Player in cold suit. `side` faces right; the game mirrors it for left. |
+| `unit_player_walk_down_4f` / `_up_4f` / `_side_4f` | 256×64 | 4 | Walk cycle, 4 frames of 64×64. |
+| `bld_crashpod_<state>` | 192×224 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
+| `bld_drill_<state>` | 128×160 | 1 | 2×2. Mining drill. |
+| `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. |
+| `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
+| `bld_encoder_<state>` | 128×160 | 1 | 2×2. Data Cell encoder. |
+| `bld_datacenter_l1_<state>` | 256×288 | 1 | 4×4. Level 1 Data Center. Important target — should look valuable. |
+| `bld_chest_<state>` | 64×96 | 1 | 1×1. Storage chest. |
+| `bld_tube_straight`, `bld_tube_corner` | 64×64 | 1 | Flat, seen from above. Straight runs left↔right; corner connects left↔down. Game rotates them. |
+| `bld_wire_straight`, `bld_wire_corner` | 64×64 | 1 | Same as tubes, for data-wires. |
+| `bld_arm` | 64×64 | 1 | Arm, pointing up. Game rotates it. (Animation later.) |
 
 `<state>` = `idle`, `damaged`, `destroyed` → 3 files per building.
+
+---
+
+## 6. Terrain (made by Claude)
+You asked me to make the Antarctica terrain, so it lives in `Assets/Art/Generated/` and is made by `Tools/terrain/generate_antarctica.py`.
+
+- Each type is **one big 512×512 picture cut into an 8×8 block** of 64 px tiles, numbered 01–64 row by row from the top-left. The map lays them out in that order, so edges always line up and the pattern only repeats every 8 tiles.
+- **If you want to draw terrain yourself:** a single replacement tile (e.g. your own `tile_snow_05`) won't line up with its neighbours. Draw a whole new type instead (tell me the name first, e.g. `tile_crevasse`), or ask me to change the generator.
+- Colours to match when you draw things that sit on the ground:
+  - Snow: `#A0B2CF` `#BACAE2` `#CFDCEE` `#E1EAF7` `#F1F6FD`
+  - Blue ice: `#3A68A0` `#4E82B8` `#659BCC` `#82B4DD` `#A5CDEB`
+  - Rock: `#222129` `#32313A` `#44424C` `#595660` `#726E77`
+

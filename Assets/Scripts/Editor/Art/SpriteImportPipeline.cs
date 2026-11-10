@@ -10,14 +10,14 @@ namespace NewGen.EditorTools.Art
 {
     /// <summary>
     /// Auto-import settings for every PNG in Assets/Art/Sprites and Assets/Art/_Placeholders:
-    /// Sprite, Point filter, no compression, 128 pixels per unit (1 tile), no mipmaps.
+    /// Sprite, Point filter, no compression, 64 pixels per unit (1 tile), no mipmaps.
     /// Files ending in _&lt;N&gt;f (e.g. unit_player_walk_4f.png) are sliced into N equal frames, left to right.
     /// This only changes IMPORT SETTINGS; it never modifies the PNG files themselves.
     /// </summary>
     public class SpriteImportPipeline : AssetPostprocessor
     {
         // Bump this number whenever the rules below change, so Unity re-imports all art.
-        const uint PipelineVersion = 2; // 2: tile size 64 -> 128
+        const uint PipelineVersion = 3; // 2: tile 64->128, 3: back to 64
 
         public override uint GetVersion() => PipelineVersion;
 

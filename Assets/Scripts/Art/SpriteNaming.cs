@@ -17,7 +17,7 @@ namespace NewGen.Art
         /// <summary>Finished art made by Claude (terrain, roads). Beats placeholders, loses to the owner's art.</summary>
         public const string GeneratedFolder = "Assets/Art/Generated";
 
-        public const int PixelsPerUnit = 128;
+        public const int PixelsPerUnit = 64;
 
         // "unit_player_walk_4f" -> 4 frames. Must be the very end of the name.
         static readonly Regex FrameSuffix = new Regex(@"_(\d+)f$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

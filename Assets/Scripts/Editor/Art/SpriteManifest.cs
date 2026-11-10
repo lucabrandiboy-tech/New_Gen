@@ -35,7 +35,7 @@ namespace NewGen.EditorTools.Art
             public string FileName => frames > 1 ? $"{name}_{frames}f.png" : $"{name}.png";
         }
 
-        const int T = SpriteNaming.PixelsPerUnit; // one tile (128 px)
+        const int T = SpriteNaming.PixelsPerUnit; // one tile (64 px)
         const int RoofOverhang = T / 2; // extra height above the footprint for 3/4 view (PROPOSED)
         static readonly string[] BuildingStates = { "idle", "damaged", "destroyed" };
 

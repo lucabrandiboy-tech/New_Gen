@@ -38,3 +38,7 @@ crashlytics-build.properties
 
 # Pixelorama project files stay on your PC (export PNGs into Sprites/ instead)
 *.pxo
+
+# Python
+__pycache__/
+*.pyc

@@ -11,7 +11,7 @@ namespace NewGen.Art
     public class SpriteGalleryTest : MonoBehaviour
     {
         [SerializeField] int columns = 8;
-        [SerializeField] float spacing = 0.5f;           // world units (1 unit = 1 tile = 128 px)
+        [SerializeField] float spacing = 0.5f;           // world units (1 unit = 1 tile = 64 px)
         [SerializeField] float framesPerSecond = 6f;
 
         readonly List<SpriteRenderer> animatedRenderers = new List<SpriteRenderer>();
