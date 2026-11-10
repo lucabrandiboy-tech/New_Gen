@@ -14,6 +14,9 @@ namespace NewGen.Art
         /// <summary>Generated flat-colour placeholders. Safe to regenerate.</summary>
         public const string PlaceholderFolder = "Assets/Art/_Placeholders";
 
+        /// <summary>Finished art made by Claude (terrain, roads). Beats placeholders, loses to the owner's art.</summary>
+        public const string GeneratedFolder = "Assets/Art/Generated";
+
         public const int PixelsPerUnit = 128;
 
         // "unit_player_walk_4f" -> 4 frames. Must be the very end of the name.
@@ -21,7 +24,9 @@ namespace NewGen.Art
 
         public static bool IsInUserFolder(string assetPath) => IsInFolder(assetPath, UserFolder);
         public static bool IsInPlaceholderFolder(string assetPath) => IsInFolder(assetPath, PlaceholderFolder);
-        public static bool IsInArtFolder(string assetPath) => IsInUserFolder(assetPath) || IsInPlaceholderFolder(assetPath);
+        public static bool IsInGeneratedFolder(string assetPath) => IsInFolder(assetPath, GeneratedFolder);
+        public static bool IsInArtFolder(string assetPath) =>
+            IsInUserFolder(assetPath) || IsInGeneratedFolder(assetPath) || IsInPlaceholderFolder(assetPath);
 
         static bool IsInFolder(string assetPath, string folder)
         {

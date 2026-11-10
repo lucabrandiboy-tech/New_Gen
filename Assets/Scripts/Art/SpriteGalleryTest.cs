@@ -33,7 +33,7 @@ namespace NewGen.Art
                 Sprite first = entry.frames[0];
                 Bounds b = first.bounds; // local bounds, depends on pivot
 
-                var go = new GameObject((entry.isPlaceholder ? "[placeholder] " : "[YOURS] ") + entry.key);
+                var go = new GameObject($"[{entry.origin}] {entry.key}");
                 go.transform.SetParent(transform, false);
                 // Put the sprite's top-left corner at the top-left of its grid cell, whatever its pivot.
                 go.transform.localPosition = new Vector3(x - b.min.x, rowTop - b.max.y, 0f);

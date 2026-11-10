@@ -6,8 +6,8 @@ namespace NewGen.Art
 {
     /// <summary>
     /// Lookup table: sprite key -> sprite frames. Built automatically in the editor
-    /// (see SpriteRegistryBuilder). If the owner's file exists in Assets/Art/Sprites
-    /// it wins; otherwise the placeholder from Assets/Art/_Placeholders is used.
+    /// (see SpriteRegistryBuilder). Priority when names clash: owner art (Assets/Art/Sprites)
+    /// > Claude-made art (Assets/Art/Generated) > placeholder (Assets/Art/_Placeholders).
     /// Game code only ever asks for a key, e.g. SpriteRegistry.Get("bld_smelter_idle").
     /// </summary>
     public class SpriteRegistry : ScriptableObject
@@ -15,11 +15,15 @@ namespace NewGen.Art
         /// <summary>Path inside a Resources folder (no extension).</summary>
         public const string ResourcePath = "SpriteRegistry";
 
+        /// <summary>Where a sprite came from. Higher value wins when names clash.</summary>
+        public enum Origin { Placeholder = 0, Generated = 1, Owner = 2 }
+
         [Serializable]
         public class Entry
         {
             public string key;
             public bool isPlaceholder;
+            public Origin origin;
             public string sourcePath;
             public Sprite[] frames;
         }

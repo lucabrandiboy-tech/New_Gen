@@ -53,20 +53,24 @@ namespace NewGen.EditorTools.Art
             if (registry == null) return;
 
             var byKey = new Dictionary<string, SpriteRegistry.Entry>();
-            Collect(SpriteNaming.PlaceholderFolder, true, byKey);
-            int overridden = Collect(SpriteNaming.UserFolder, false, byKey);
+            // Lowest priority first; later folders replace earlier ones with the same name.
+            Collect(SpriteNaming.PlaceholderFolder, SpriteRegistry.Origin.Placeholder, byKey);
+            Collect(SpriteNaming.GeneratedFolder, SpriteRegistry.Origin.Generated, byKey);
+            int overridden = Collect(SpriteNaming.UserFolder, SpriteRegistry.Origin.Owner, byKey);
 
             List<SpriteRegistry.Entry> list = byKey.Values.OrderBy(e => e.key, StringComparer.Ordinal).ToList();
             registry.EditorSetEntries(list);
             EditorUtility.SetDirty(registry);
             AssetDatabase.SaveAssetIfDirty(registry);
 
-            int placeholders = list.Count(e => e.isPlaceholder);
-            Debug.Log($"[Art] Sprite registry rebuilt: {list.Count} sprites ({list.Count - placeholders} yours, {placeholders} placeholders, {overridden} placeholders replaced by your art).");
+            int owner = list.Count(e => e.origin == SpriteRegistry.Origin.Owner);
+            int generated = list.Count(e => e.origin == SpriteRegistry.Origin.Generated);
+            int placeholders = list.Count(e => e.origin == SpriteRegistry.Origin.Placeholder);
+            Debug.Log($"[Art] Sprite registry rebuilt: {list.Count} sprites ({owner} yours, {generated} generated, {placeholders} placeholders; {overridden} replaced by your art).");
         }
 
-        /// <returns>How many existing (placeholder) entries this folder replaced.</returns>
-        static int Collect(string folder, bool isPlaceholder, Dictionary<string, SpriteRegistry.Entry> byKey)
+        /// <returns>How many lower-priority entries this folder replaced.</returns>
+        static int Collect(string folder, SpriteRegistry.Origin origin, Dictionary<string, SpriteRegistry.Entry> byKey)
         {
             if (!AssetDatabase.IsValidFolder(folder)) return 0;
 
@@ -96,7 +100,7 @@ namespace NewGen.EditorTools.Art
                 {
                     Debug.LogWarning($"[Art] Two files in {folder} both map to the name '{key}'. Only '{path}' is used. Rename one of them.");
                 }
-                else if (byKey.TryGetValue(key, out SpriteRegistry.Entry existing) && existing.isPlaceholder && !isPlaceholder)
+                else if (byKey.TryGetValue(key, out SpriteRegistry.Entry existing) && existing.origin < origin)
                 {
                     replaced++;
                 }
@@ -104,7 +108,8 @@ namespace NewGen.EditorTools.Art
                 byKey[key] = new SpriteRegistry.Entry
                 {
                     key = key,
-                    isPlaceholder = isPlaceholder,
+                    isPlaceholder = origin == SpriteRegistry.Origin.Placeholder,
+                    origin = origin,
                     sourcePath = path,
                     frames = frames,
                 };
