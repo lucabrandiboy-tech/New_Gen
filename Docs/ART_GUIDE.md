@@ -94,7 +94,8 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `unit_player_idle_down` / `_up` / `_side` | 64×64 | 1 | Player in cold suit. `side` faces right; the game mirrors it for left. |
 | `unit_player_walk_down_4f` / `_up_4f` / `_side_4f` | 256×64 | 4 | Walk cycle, 4 frames of 64×64. |
 | `bld_crashpod_<state>` | 192×224 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
-| `bld_drill_<state>` | 128×160 | 1 | 2×2. Mining drill. |
+| `bld_drill_<state>` | 192×224 | 1 | **3×3**. Mining drill ("Miner MK1"). |
+| `bld_drill_working_3f` | 576×224 | 3 | Drill working animation: 3 frames of 192×224 side by side. Plays very fast (~20 fps). |
 | `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. |
 | `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
 | `bld_encoder_<state>` | 128×160 | 1 | 2×2. Data Cell encoder. |

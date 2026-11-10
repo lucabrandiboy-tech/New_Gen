@@ -70,7 +70,9 @@ namespace NewGen.EditorTools.Art
 
             // Buildings: footprint in tiles. Sprite = footprint width x (footprint height + overhang).
             AddBuilding(list, "crashpod", 3, 3);
-            AddBuilding(list, "drill", 2, 2);
+            AddBuilding(list, "drill", 3, 3);
+            // Drill working animation (owner-drawn, 3 frames, plays fast ~20 fps).
+            list.Add(new Spec("bld_drill_working", Kind.Building, 3 * T, 3 * T + RoofOverhang, frames: 3, footW: 3, footH: 3));
             AddBuilding(list, "smelter", 2, 2);
             AddBuilding(list, "assembler", 3, 3);
             AddBuilding(list, "encoder", 2, 2);

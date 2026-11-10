@@ -278,3 +278,4 @@ Newest at the bottom. These override anything earlier in this file.
 | 2026-11-09 | **Approved:** building sprite = footprint × 128 wide, footprint × 128 + 64 px tall. Full M1 sprite list in ART_GUIDE §5 approved. Art pipeline owner-tested and working. |
 | 2026-11-10 | **Claude makes the Antarctica terrain tiles** (owner request; owner still draws everything else except roads). Claude-made art lives in `Assets/Art/Generated/` (never in `Sprites/`). Priority: owner art > generated > placeholder. Terrain = 8×8 block per type (`tile_<type>_01..64`), placed by world position; generator in `Tools/terrain/`. |
 | 2026-11-10 | **Tile size back to 64×64 px** (128 reverted). PPU 64. Buildings = footprint × 64 wide, footprint × 64 + 32 px tall. Items/cells 32×32. Terrain regenerated at 64 px, simplified. |
+| 2026-11-10 | Drill (Miner MK1) footprint **3×3** (192×224 sprite). Has a 3-frame working animation `bld_drill_working_3f`, played very fast (~20 fps). |
