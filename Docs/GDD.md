@@ -56,7 +56,7 @@ Rough save size after 100+ hours: tens of MB, mostly buildings/entities — not 
 - Import pipeline: PNGs in `Assets/Art/Sprites` (owner), `Assets/Art/Generated` (Claude-made art) and `Assets/Art/_Placeholders` are auto-imported (point filter, uncompressed, 64 PPU). `_<N>f` suffix = N-frame horizontal sheet. A sprite registry maps names → sprites; priority owner > generated > placeholder, with no code changes. Buildings pivot bottom-left, everything else centre. [BUILT — owner-tested 2026-11-09: compiles, placeholders + override + animation slicing work]
 - Sprite list & sizes (building height = footprint + 32 px, items 32×32, player 3 directions with mirrored side): [DECIDED 2026-11-09]
 - Working-state glow via 2D light: [DECIDED — built later with the building system]
-- Drill (Miner MK1) is **3×3** and has an owner-drawn 3-frame working animation (`bld_drill_working_3f`), played **very fast, ~20 fps**. [DECIDED 2026-11-10 — playback code comes with machines, step 6]
+- Drill (Miner MK1) is **3×3** and has an owner-drawn 3-frame working animation (`bld_drill_working_3f`), played at **0.10 s per frame** (frames 1→2→3 loop). Separate **no-power** sprite `bld_drill_nopower`; a flashing no-power icon will overlay unpowered machines (owner will draw it; overlay code later). [DECIDED 2026-11-10 — playback code comes with machines, step 6]
 
 ## 6. Open questions for the owner
 - 15 largest faction names · Data Cell tier codenames · tier × branch research chart · story/mystery · infinite research · reparation pricing · terrain art before Earth pre-fill · Earth map design · netcode/data-format choices · Brain Core drone timer/cost.

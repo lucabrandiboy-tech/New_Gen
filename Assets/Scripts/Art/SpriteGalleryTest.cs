@@ -12,7 +12,7 @@ namespace NewGen.Art
     {
         [SerializeField] int columns = 8;
         [SerializeField] float spacing = 0.5f;           // world units (1 unit = 1 tile = 64 px)
-        [SerializeField] float framesPerSecond = 6f;
+        [SerializeField] float framesPerSecond = 10f;   // 0.10 s per frame (drill speed)
 
         readonly List<SpriteRenderer> animatedRenderers = new List<SpriteRenderer>();
         readonly List<Sprite[]> animatedFrames = new List<Sprite[]>();
