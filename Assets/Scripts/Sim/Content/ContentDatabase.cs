@@ -42,6 +42,7 @@ namespace NewGen.Sim.Content
                 {
                     Id = o.Str("id"), Name = o.Str("name", o.Str("id")), Buildable = o.Bool("buildable", true), Walkable = o.Bool("walkable", true),
                     WalkSpeedPermille = o.Int("walkSpeedPermille", 1000), ColdPerTick = o.Int("coldPerTick", 0), CoolingPermille = o.Int("coolingPermille", 1000),
+                    YieldsItem = o.Str("yields"), HandMineTicks = o.Int("handMineTicks", 60),
                 };
                 t.Index = (byte)Terrains.Count;
                 Terrains.Add(t);
@@ -140,6 +141,7 @@ namespace NewGen.Sim.Content
                 foreach (var b in t.UnlocksBuildings) if (!Buildings.ContainsKey(b)) Problems.Add($"tech {t.Id}: unknown building {b}");
                 foreach (var c in t.CellCost.Keys) if (!Items.ContainsKey(c)) Problems.Add($"tech {t.Id}: unknown cell item {c}");
             }
+            foreach (var t in Terrains) if (t.YieldsItem != null && !Items.ContainsKey(t.YieldsItem)) Problems.Add($"terrain {t.Id}: unknown item {t.YieldsItem}");
             foreach (var r in Resources) if (r.Index != 0 && !Items.ContainsKey(r.YieldsItem)) Problems.Add($"resource {r.Id}: unknown item {r.YieldsItem}");
             foreach (var p in Problems) SimLog.Warn("[Content] " + p);
         }

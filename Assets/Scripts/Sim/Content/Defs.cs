@@ -119,6 +119,8 @@ namespace NewGen.Sim.Content
         public int WalkSpeedPermille = 1000;
         public int ColdPerTick;               // temperature drained per tick while standing on it
         public int CoolingPermille = 1000;    // data-center cooling multiplier
+        public string YieldsItem;             // item mined from the bare terrain (ice -> ice); null = nothing
+        public int HandMineTicks = 60;
     }
 
     public sealed class ResourceDef

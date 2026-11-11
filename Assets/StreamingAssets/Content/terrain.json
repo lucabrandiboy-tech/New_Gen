@@ -1,7 +1,8 @@
 {
   "terrain": [
     { "id": "snow", "name": "Snow",     "buildable": true, "walkable": true, "walkSpeedPermille": 900,  "coldPerTick": 1, "coolingPermille": 1200 },
-    { "id": "ice",  "name": "Blue ice", "buildable": true, "walkable": true, "walkSpeedPermille": 1100, "coldPerTick": 2, "coolingPermille": 1400 },
-    { "id": "rock", "name": "Rock",     "buildable": true, "walkable": true, "walkSpeedPermille": 1000, "coldPerTick": 0, "coolingPermille": 1000 }
+    { "id": "ice",  "name": "Blue ice", "buildable": true, "walkable": true, "walkSpeedPermille": 1100, "coldPerTick": 2, "coolingPermille": 1400, "yields": "ice", "handMineTicks": 40 },
+    { "id": "rock", "name": "Rock",     "buildable": true, "walkable": true, "walkSpeedPermille": 1000, "coldPerTick": 0, "coolingPermille": 1000 },
+    { "id": "ocean", "name": "Ocean",   "buildable": false, "walkable": false, "walkSpeedPermille": 0, "coldPerTick": 4, "coolingPermille": 1000 }
   ]
 }

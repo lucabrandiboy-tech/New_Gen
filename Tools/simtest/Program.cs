@@ -10,6 +10,7 @@ namespace NewGen.SimTest
             string repoRoot = FindRepoRoot();
             CoreTests.Run();
             ContentTests.Run(repoRoot);
+            WorldTests.Run(repoRoot);
             // Later test groups are added here as systems are built.
             RunAll(repoRoot);
             Console.WriteLine($"\n{Check.Passed} checks passed, {Check.Failures} failed.");

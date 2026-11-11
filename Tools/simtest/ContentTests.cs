@@ -14,7 +14,8 @@ namespace NewGen.SimTest
             string dir = Path.Combine(repoRoot, "Assets", "StreamingAssets", "Content");
             Db = ContentDatabase.LoadFromDirectory(dir);
             Check.Eq(0, Db.Problems.Count, "content has no validation problems: " + string.Join("; ", Db.Problems));
-            Check.Eq(3, Db.Terrains.Count, "3 terrains");
+            Check.Eq(4, Db.Terrains.Count, "4 terrains");
+            Check.Eq("ice", Db.TerrainById("ice").YieldsItem, "ice terrain yields ice");
             Check.Eq("snow", Db.Terrain(0).Id, "terrain 0 is snow");
             Check.Eq(5, Db.Resources.Count, "4 resources + none");
             Check.True(Db.Items.ContainsKey("iron_ore"), "iron_ore item");
