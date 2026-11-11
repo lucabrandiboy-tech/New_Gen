@@ -58,6 +58,22 @@ namespace NewGen.Art
             return frames != null && frames.Length > 0 ? frames[0] : null;
         }
 
+        /// <summary>First frame, or null, WITHOUT a warning (for optional sprites like working animations).</summary>
+        public static Sprite TryGet(string key)
+        {
+            var f = TryGetFrames(key);
+            return f != null && f.Length > 0 ? f[0] : null;
+        }
+
+        /// <summary>All frames, or null, without a warning.</summary>
+        public static Sprite[] TryGetFrames(string key)
+        {
+            SpriteRegistry reg = Instance;
+            if (reg == null || string.IsNullOrEmpty(key)) return null;
+            if (reg.lookup == null) reg.BuildLookup();
+            return reg.lookup.TryGetValue(key.ToLowerInvariant(), out Entry e) ? e.frames : null;
+        }
+
         /// <summary>All frames for a key, or null if missing.</summary>
         public static Sprite[] GetFrames(string key)
         {

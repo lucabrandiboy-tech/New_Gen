@@ -13,7 +13,7 @@ namespace NewGen.EditorTools.Art
     /// </summary>
     public static class SpriteManifest
     {
-        public enum Kind { Terrain, Resource, Item, Cell, Unit, Building, Logistics }
+        public enum Kind { Terrain, Resource, Item, Cell, Unit, Building, Logistics, Icon, Fx }
 
         public readonly struct Spec
         {
@@ -47,7 +47,7 @@ namespace NewGen.EditorTools.Art
             var list = new List<Spec>();
 
             // Terrain (1 tile, must tile seamlessly)
-            foreach (string n in new[] { "tile_snow_01", "tile_ice_01", "tile_rock_01" })
+            foreach (string n in new[] { "tile_snow_01", "tile_ice_01", "tile_rock_01", "tile_ocean_01" })
                 list.Add(new Spec(n, Kind.Terrain, T, T));
 
             // Resource patches drawn on top of terrain
@@ -87,6 +87,11 @@ namespace NewGen.EditorTools.Art
             foreach (string n in new[] { "bld_tube_straight", "bld_tube_corner", "bld_wire_straight", "bld_wire_corner", "bld_arm" })
                 list.Add(new Spec(n, Kind.Logistics, T, T, footW: 1, footH: 1));
 
+            // HUD/world icons drawn over machines (owner will draw the real ones) and the bullet
+            foreach (string n in new[] { "icon_nopower", "icon_missing_input", "icon_overheat" })
+                list.Add(new Spec(n, Kind.Icon, 24, 24));
+            list.Add(new Spec("fx_bullet", Kind.Fx, 12, 6));
+
             return list;
         }
 
@@ -107,6 +112,8 @@ namespace NewGen.EditorTools.Art
                 case Kind.Unit:      return new Color32(210, 70, 70, 255);   // red
                 case Kind.Building:  return new Color32(110, 120, 140, 255); // steel grey-blue
                 case Kind.Logistics: return new Color32(150, 90, 200, 255);  // purple
+                case Kind.Icon:      return new Color32(255, 70, 70, 255);   // red
+                case Kind.Fx:        return new Color32(255, 240, 150, 255); // pale yellow
                 default:             return new Color32(255, 0, 255, 255);   // magenta = unknown
             }
         }
