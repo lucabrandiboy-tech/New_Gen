@@ -1,0 +1,23 @@
+{
+  "ui.temperature": "Body temperature",
+  "ui.health": "Health",
+  "ui.inventory": "Inventory",
+  "ui.research": "Research",
+  "ui.save": "Save",
+  "ui.load": "Load",
+  "ui.quit": "Quit",
+  "ui.new_game": "New game",
+  "ui.continue": "Continue",
+  "ui.ironman": "Ironman",
+  "ui.difficulty": "Difficulty",
+  "ui.settings": "Settings",
+  "alert.no_power": "No power",
+  "alert.under_attack": "Under attack",
+  "alert.missing_input": "Missing input",
+  "alert.save_cooldown": "You can save again in {0}",
+  "death.body": "Your body froze. Reload your last save.",
+  "win.question": "Have You Really Won?",
+  "boot.line1": "NEW GENERATION // boot sequence",
+  "boot.line2": "chronopod telemetry ..... LOST",
+  "boot.line3": "location ..... 2026 / ANTARCTICA"
+}

@@ -1,0 +1,7 @@
+{
+  // Empty on purpose: the owner adds recipes once sprites exist.
+  // Example of the format:
+  // { "id": "iron_plate", "name": "Iron plate", "crafter": "smelter", "ticks": 96,
+  //   "inputs": { "iron_ore": 1 }, "outputs": { "iron_plate": 1 }, "unlockedAtStart": true }
+  "recipes": []
+}

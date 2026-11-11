@@ -1,0 +1,8 @@
+{
+  "resources": [
+    { "id": "iron",   "name": "Iron ore",   "yields": "iron_ore",   "handMineTicks": 60, "spawnWeight": 100, "patchRadiusMin": 5, "patchRadiusMax": 9 },
+    { "id": "copper", "name": "Copper ore", "yields": "copper_ore", "handMineTicks": 60, "spawnWeight": 80,  "patchRadiusMin": 4, "patchRadiusMax": 8 },
+    { "id": "coal",   "name": "Coal",       "yields": "coal",       "handMineTicks": 45, "spawnWeight": 70,  "patchRadiusMin": 4, "patchRadiusMax": 8 },
+    { "id": "stone",  "name": "Stone",      "yields": "stone",      "handMineTicks": 45, "spawnWeight": 60,  "patchRadiusMin": 3, "patchRadiusMax": 6 }
+  ]
+}

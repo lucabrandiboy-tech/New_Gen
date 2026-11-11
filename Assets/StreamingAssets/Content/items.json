@@ -1,0 +1,12 @@
+{
+  "items": [
+    { "id": "iron_ore",     "name": "Iron ore",     "stackSize": 50 },
+    { "id": "copper_ore",   "name": "Copper ore",   "stackSize": 50 },
+    { "id": "coal",         "name": "Coal",         "stackSize": 50 },
+    { "id": "stone",        "name": "Stone",        "stackSize": 50 },
+    { "id": "ice",          "name": "Ice",          "stackSize": 50 },
+    { "id": "iron_plate",   "name": "Iron plate",   "stackSize": 100 },
+    { "id": "copper_plate", "name": "Copper plate", "stackSize": 100 },
+    { "id": "cell_resource", "name": "Resource data cell", "stackSize": 200, "category": "cell" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "ticksPerSecond": 30,
+  "playerWalkSubPerTick": 68,
+  "playerMaxHealth": 100,
+  "playerMaxTemperature": 1000,
+  "playerBaseColdPerTick": 1,
+  "playerInventorySlots": 40,
+  "playerReach": 6,
+  "playerHandMineSpeedPermille": 1000,
+  "playerShootTicks": 10,
+  "projectileSpeedSubPerTick": 400,
+  "projectileDamage": 10,
+  "projectileRangeTiles": 12,
+  "manualSaveCooldownSeconds": 600,
+  "ironmanSaveCooldownSeconds": 3600,
+  "researchQueueMax": 10,
+  "chunkLoadRadius": 3,
+  "mapSeedDefault": 2026,
+  "testMapRadiusChunks": 16
+}

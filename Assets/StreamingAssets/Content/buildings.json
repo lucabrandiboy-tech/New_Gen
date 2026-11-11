@@ -1,0 +1,22 @@
+{
+  // Sizes match Docs/ART_GUIDE.md. "cost" is empty everywhere until recipes exist (buildings are free to place).
+  // Power is in watts. 1 tile = 64 px = 256 sub-units; subPerTick 32 = one tile every 8 ticks (~3.75 tiles/s).
+  "buildings": [
+    { "id": "crashpod", "name": "Crashed time pod", "width": 3, "height": 3, "kind": "Generator", "rotatable": false, "maxHealth": 2000,
+      "powerOutput": 200000, "decayTicks": 216000, "decayFloorPermille": 100, "warmthRadiusTiles": 4, "warmthPerTick": 6 },
+    { "id": "drill", "name": "Miner MK1", "width": 3, "height": 3, "kind": "Drill", "maxHealth": 300,
+      "powerUse": 30000, "mineTicksPerItem": 60, "outputSlots": 1 },
+    { "id": "smelter", "name": "Smelter", "width": 2, "height": 2, "kind": "Crafter", "crafterType": "smelter", "maxHealth": 250,
+      "powerUse": 40000, "inputSlots": 1, "outputSlots": 1, "warmthRadiusTiles": 3, "warmthPerTick": 3 },
+    { "id": "assembler", "name": "Assembler", "width": 3, "height": 3, "kind": "Crafter", "crafterType": "assembler", "maxHealth": 300,
+      "powerUse": 50000, "inputSlots": 4, "outputSlots": 2 },
+    { "id": "encoder", "name": "Data cell encoder", "width": 2, "height": 2, "kind": "Crafter", "crafterType": "encoder", "maxHealth": 200,
+      "powerUse": 60000, "inputSlots": 3, "outputSlots": 1 },
+    { "id": "datacenter_l1", "name": "Data center L1", "width": 4, "height": 4, "kind": "DataCenter", "maxHealth": 600,
+      "powerUse": 150000, "researchPerTick": 1, "heatPerTick": 2, "maxHeat": 1000, "inputSlots": 4 },
+    { "id": "chest", "name": "Chest", "width": 1, "height": 1, "kind": "Chest", "rotatable": false, "maxHealth": 100, "slots": 16 },
+    { "id": "tube", "name": "Tube", "width": 1, "height": 1, "kind": "Tube", "maxHealth": 50, "powerUse": 500, "subPerTick": 32, "itemsPerTile": 4 },
+    { "id": "wire", "name": "Data wire (iron)", "width": 1, "height": 1, "kind": "Wire", "maxHealth": 50, "subPerTick": 32, "itemsPerTile": 4 },
+    { "id": "arm", "name": "Arm", "width": 1, "height": 1, "kind": "Arm", "maxHealth": 80, "powerUse": 5000, "armTicksPerSwing": 24 }
+  ]
+}

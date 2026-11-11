@@ -1,0 +1,7 @@
+{
+  // Placeholder tech tree so the research loop can be tested. The real tier x branch chart needs owner approval.
+  "techs": [
+    { "id": "first_contact", "name": "Signal analysis", "branch": "compute", "tier": 1,
+      "cellCost": { "cell_resource": 100 }, "researchPoints": 100, "prerequisites": [], "unlocksRecipes": [], "unlocksBuildings": [] }
+  ]
+}
