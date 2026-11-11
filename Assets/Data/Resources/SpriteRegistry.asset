@@ -1,0 +1,259 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce61175a72c13f4cbcc1c4bd6ef44f1, type: 3}
+  m_Name: SpriteRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::NewGen.Art.SpriteRegistry
+  entries:
+  - key: bld_arm
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_arm.png
+    frames:
+    - {fileID: 21300000, guid: 95cd7907a6967994591b35b109409098, type: 3}
+  - key: bld_assembler_damaged
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_assembler_damaged.png
+    frames:
+    - {fileID: 21300000, guid: 4a1d5a5aa3a7abf46bae8252d01e800f, type: 3}
+  - key: bld_assembler_destroyed
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_assembler_destroyed.png
+    frames:
+    - {fileID: 21300000, guid: af6847375902649458ddb96051305153, type: 3}
+  - key: bld_assembler_idle
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_assembler_idle.png
+    frames:
+    - {fileID: 21300000, guid: e2fb7772979ba01469681ef0480525a1, type: 3}
+  - key: bld_chest_damaged
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_chest_damaged.png
+    frames:
+    - {fileID: 21300000, guid: 0f2ae655cc8672845aeb60819728ead7, type: 3}
+  - key: bld_chest_destroyed
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_chest_destroyed.png
+    frames:
+    - {fileID: 21300000, guid: db510100bf5a41d45ba8c7dcc6459b78, type: 3}
+  - key: bld_chest_idle
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_chest_idle.png
+    frames:
+    - {fileID: 21300000, guid: 9b6b6ad1fbfe8564e8220f1430207b8d, type: 3}
+  - key: bld_crashpod_damaged
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_crashpod_damaged.png
+    frames:
+    - {fileID: 21300000, guid: 8990d804955b4c1499e63caa8a6dd2bd, type: 3}
+  - key: bld_crashpod_destroyed
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_crashpod_destroyed.png
+    frames:
+    - {fileID: 21300000, guid: 9b6b7afbb13b2e648a4a8ee11e05b1e9, type: 3}
+  - key: bld_crashpod_idle
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_crashpod_idle.png
+    frames:
+    - {fileID: 21300000, guid: 2ea179adbe6106d4995422323e05908e, type: 3}
+  - key: bld_datacenter_l1_damaged
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_datacenter_l1_damaged.png
+    frames:
+    - {fileID: 21300000, guid: 9dd9ec79bae93ac4bab6b9b0e6285d21, type: 3}
+  - key: bld_datacenter_l1_destroyed
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_datacenter_l1_destroyed.png
+    frames:
+    - {fileID: 21300000, guid: 8f3f0c73d862b614997b3253335ea274, type: 3}
+  - key: bld_datacenter_l1_idle
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_datacenter_l1_idle.png
+    frames:
+    - {fileID: 21300000, guid: 14fac68b46c8d8d43ba1d53f32d9ef42, type: 3}
+  - key: bld_drill_damaged
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_drill_damaged.png
+    frames:
+    - {fileID: 21300000, guid: 2525e2f5edc4d57469669afd4068f996, type: 3}
+  - key: bld_drill_destroyed
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_drill_destroyed.png
+    frames:
+    - {fileID: 21300000, guid: f0a460d80c659d244b472425e193427b, type: 3}
+  - key: bld_drill_idle
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_drill_idle.png
+    frames:
+    - {fileID: 21300000, guid: d58fda7dd2ebffe43b808e39855690ca, type: 3}
+  - key: bld_encoder_damaged
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_encoder_damaged.png
+    frames:
+    - {fileID: 21300000, guid: dd02421a043fa424f837d330181721a0, type: 3}
+  - key: bld_encoder_destroyed
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_encoder_destroyed.png
+    frames:
+    - {fileID: 21300000, guid: d54ec66deb6c84d4391cff72f8c0c25b, type: 3}
+  - key: bld_encoder_idle
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_encoder_idle.png
+    frames:
+    - {fileID: 21300000, guid: a5aa0f2f37e1e7049a0a95497e1b8c2f, type: 3}
+  - key: bld_smelter_damaged
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_smelter_damaged.png
+    frames:
+    - {fileID: 21300000, guid: 082c1826d1d932748ad5bfee2012f124, type: 3}
+  - key: bld_smelter_destroyed
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_smelter_destroyed.png
+    frames:
+    - {fileID: 21300000, guid: 9b90cd01f2173384698952b8a404c2e3, type: 3}
+  - key: bld_smelter_idle
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_smelter_idle.png
+    frames:
+    - {fileID: 21300000, guid: 6c90b6bd35d8e414396716ae69daedfb, type: 3}
+  - key: bld_tube_corner
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_tube_corner.png
+    frames:
+    - {fileID: 21300000, guid: 96a64fc565958d644be1dcf4fefb9baf, type: 3}
+  - key: bld_tube_straight
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_tube_straight.png
+    frames:
+    - {fileID: 21300000, guid: dc82e5726119d974fa39467e6c14d2d5, type: 3}
+  - key: bld_wire_corner
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_wire_corner.png
+    frames:
+    - {fileID: 21300000, guid: d9e2d066f0eff134c8c45eb882efe3fb, type: 3}
+  - key: bld_wire_straight
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/bld_wire_straight.png
+    frames:
+    - {fileID: 21300000, guid: f02b576534c25234abaf91e201b17c6a, type: 3}
+  - key: cell_resource
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/cell_resource.png
+    frames:
+    - {fileID: 21300000, guid: f8c89eb391dc53a4bbb2a5641c32e8fb, type: 3}
+  - key: item_coal
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/item_coal.png
+    frames:
+    - {fileID: 21300000, guid: e3f0156e5a6e98e43b1adebbc619241f, type: 3}
+  - key: item_copper_ore
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/item_copper_ore.png
+    frames:
+    - {fileID: 21300000, guid: 3e4e42583e23281469f95be445ab2e7f, type: 3}
+  - key: item_copper_plate
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/item_copper_plate.png
+    frames:
+    - {fileID: 21300000, guid: 4483252d1c4a8ff4fb6734c1046668fd, type: 3}
+  - key: item_ice
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/item_ice.png
+    frames:
+    - {fileID: 21300000, guid: 91f4336ddde3b0b4481ba626849ade36, type: 3}
+  - key: item_iron_ore
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/item_iron_ore.png
+    frames:
+    - {fileID: 21300000, guid: 5a10c7ec34115714d91bc1c76fc43358, type: 3}
+  - key: item_iron_plate
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/item_iron_plate.png
+    frames:
+    - {fileID: 21300000, guid: a6767c9fb5f4bed4ab429b9648995d09, type: 3}
+  - key: item_stone
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/item_stone.png
+    frames:
+    - {fileID: 21300000, guid: ee28a894f812d0f42a82a366191b2511, type: 3}
+  - key: res_coal_01
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/res_coal_01.png
+    frames:
+    - {fileID: 21300000, guid: b8da2c804ecf7184f96ace368895a790, type: 3}
+  - key: res_copper_01
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/res_copper_01.png
+    frames:
+    - {fileID: 21300000, guid: 083bba45ace6d234b999e09cbaa8c467, type: 3}
+  - key: res_iron_01
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/res_iron_01.png
+    frames:
+    - {fileID: 21300000, guid: cbd5985f75a4f764b92160a110b131cf, type: 3}
+  - key: res_stone_01
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/res_stone_01.png
+    frames:
+    - {fileID: 21300000, guid: 397e12fdcc4b80349a9a97a9be5d092c, type: 3}
+  - key: tile_ice_01
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/tile_ice_01.png
+    frames:
+    - {fileID: 21300000, guid: 39dc411c0b09c294cb33b3832a632b05, type: 3}
+  - key: tile_rock_01
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/tile_rock_01.png
+    frames:
+    - {fileID: 21300000, guid: f9ce1799b7944464799a35545e4342de, type: 3}
+  - key: tile_snow_01
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/tile_snow_01.png
+    frames:
+    - {fileID: 21300000, guid: 706edeab34f4b294e862b0ac3ee3c77f, type: 3}
+  - key: unit_player_idle_down
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/unit_player_idle_down.png
+    frames:
+    - {fileID: 21300000, guid: 8469555006832d344b0b5b48a5023345, type: 3}
+  - key: unit_player_idle_side
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/unit_player_idle_side.png
+    frames:
+    - {fileID: 21300000, guid: d3d2ed1d1281bf64aa35b0cc33d787f0, type: 3}
+  - key: unit_player_idle_up
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/unit_player_idle_up.png
+    frames:
+    - {fileID: 21300000, guid: f306c0194a5869a40b19154ddd79535c, type: 3}
+  - key: unit_player_walk_down
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/unit_player_walk_down_4f.png
+    frames:
+    - {fileID: -894752673, guid: fe09dac0cd1b0764297046e158cd89d2, type: 3}
+    - {fileID: 448966421, guid: fe09dac0cd1b0764297046e158cd89d2, type: 3}
+    - {fileID: -2057874180, guid: fe09dac0cd1b0764297046e158cd89d2, type: 3}
+    - {fileID: 1049536552, guid: fe09dac0cd1b0764297046e158cd89d2, type: 3}
+  - key: unit_player_walk_side
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/unit_player_walk_side_4f.png
+    frames:
+    - {fileID: -650426814, guid: 4cb26cbf4d7d5664a8a1a12d51ebcf82, type: 3}
+    - {fileID: -1900702704, guid: 4cb26cbf4d7d5664a8a1a12d51ebcf82, type: 3}
+    - {fileID: 1183678176, guid: 4cb26cbf4d7d5664a8a1a12d51ebcf82, type: 3}
+    - {fileID: 1671261350, guid: 4cb26cbf4d7d5664a8a1a12d51ebcf82, type: 3}
+  - key: unit_player_walk_up
+    isPlaceholder: 1
+    sourcePath: Assets/Art/_Placeholders/unit_player_walk_up_4f.png
+    frames:
+    - {fileID: 132483675, guid: c8cec273ea382484780b2046cbb19a82, type: 3}
+    - {fileID: -1203450974, guid: c8cec273ea382484780b2046cbb19a82, type: 3}
+    - {fileID: -794421308, guid: c8cec273ea382484780b2046cbb19a82, type: 3}
+    - {fileID: -445981120, guid: c8cec273ea382484780b2046cbb19a82, type: 3}
