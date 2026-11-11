@@ -1,0 +1,19 @@
+{
+    "name": "NewGen.Game",
+    "rootNamespace": "NewGen.Game",
+    "references": [
+        "NewGen.Sim",
+        "NewGen.Art",
+        "Unity.InputSystem",
+        "Unity.RenderPipelines.Universal.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

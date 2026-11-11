@@ -42,3 +42,7 @@ crashlytics-build.properties
 # Python
 __pycache__/
 *.pyc
+
+# .NET build output (sim test harness)
+Tools/**/bin/
+Tools/**/obj/
