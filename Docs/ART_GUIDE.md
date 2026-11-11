@@ -96,7 +96,7 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `bld_crashpod_<state>` | 192×224 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
 | `bld_drill_<state>` | 192×224 | 1 | **3×3**. Mining drill ("Miner MK1"). |
 | `bld_drill_idle` | 192×224 | 1 | Default look = frame 1 of the animation (powered, not running). |
-| `bld_drill_working_right_3f`, `_left_3f`, `_up_3f`, `_down_3f` | 576×224 | 3 | Working animation, **one per output side** (the side the ore comes out). Frames 1, 2, 3 side by side (192×224 each), looped, **0.10 s per frame**. |
+| `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224, 3 frames); `bld_drill_working_left_5f` (960×224, 5 frames) | — | 3 / 5 | Working animation, **one per output side** (the side the ore comes out). Frames 1, 2, 3 side by side (192×224 each), looped, **0.10 s per frame**. |
 | `bld_drill_nopower` | 192×224 | 1 | Drill with no power. A flashing no-power icon will be drawn over it later (separate sprite, TBD). |
 | `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. |
 | `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
@@ -134,7 +134,7 @@ Say **"Check"** and Claude lists what's left (compares this list with what's in 
 
 **Drill / Miner MK1** (3×3 → 192×224)
 - `bld_drill_idle`, `bld_drill_nopower`, `bld_drill_damaged`, `bld_drill_destroyed`
-- `bld_drill_working_right_3f`, `_left_3f`, `_up_3f`, `_down_3f` (576×224 each)
+- `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224 each), `bld_drill_working_left_5f` (960×224)
 
 **Smelter** (2×2 → 128×160): `bld_smelter_idle`, `_damaged`, `_destroyed`
 **Assembler** (3×3 → 192×224): `bld_assembler_idle`, `_damaged`, `_destroyed`

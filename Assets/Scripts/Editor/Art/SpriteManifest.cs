@@ -72,8 +72,9 @@ namespace NewGen.EditorTools.Art
             AddBuilding(list, "crashpod", 3, 3);
             AddBuilding(list, "drill", 3, 3);
             // Drill working animation (owner-drawn), one per output side: frames 1,2,3 looped, 0.10 s per frame.
-            foreach (string side in new[] { "right", "left", "up", "down" })
-                list.Add(new Spec($"bld_drill_working_{side}", Kind.Building, 3 * T, 3 * T + RoofOverhang, frames: 3, footW: 3, footH: 3));
+            // Frame count can differ per side (left has 5).
+            foreach (var (side, frames) in new[] { ("right", 3), ("left", 5), ("up", 3), ("down", 3) })
+                list.Add(new Spec($"bld_drill_working_{side}", Kind.Building, 3 * T, 3 * T + RoofOverhang, frames: frames, footW: 3, footH: 3));
             // Drill with no power (owner-drawn). A flashing "no power" icon will be drawn on top later.
             list.Add(new Spec("bld_drill_nopower", Kind.Building, 3 * T, 3 * T + RoofOverhang, footW: 3, footH: 3));
             AddBuilding(list, "smelter", 2, 2);
