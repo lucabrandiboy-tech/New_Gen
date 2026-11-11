@@ -168,10 +168,10 @@ namespace NewGen.Sim.Content
             return list;
         }
 
-        public ItemDef Item(string id) => Items.TryGetValue(id, out var v) ? v : null;
-        public BuildingDef Building(string id) => Buildings.TryGetValue(id, out var v) ? v : null;
-        public RecipeDef Recipe(string id) => Recipes.TryGetValue(id, out var v) ? v : null;
-        public TechDef Tech(string id) => Techs.TryGetValue(id, out var v) ? v : null;
+        public ItemDef Item(string id) => id != null && Items.TryGetValue(id, out var v) ? v : null;
+        public BuildingDef Building(string id) => id != null && Buildings.TryGetValue(id, out var v) ? v : null;
+        public RecipeDef Recipe(string id) => id != null && Recipes.TryGetValue(id, out var v) ? v : null;
+        public TechDef Tech(string id) => id != null && Techs.TryGetValue(id, out var v) ? v : null;
         public TerrainDef Terrain(byte index) => index < Terrains.Count ? Terrains[index] : Terrains[0];
         public TerrainDef TerrainById(string id) => Terrains.Find(t => t.Id == id);
         public ResourceDef Resource(byte index) => index < Resources.Count ? Resources[index] : Resources[0];
