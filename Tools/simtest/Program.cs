@@ -15,6 +15,7 @@ namespace NewGen.SimTest
             PowerTests.Run(repoRoot);
             LogisticsTests.Run(repoRoot);
             MachineTests.Run(repoRoot);
+            PlayerTests.Run(repoRoot);
             // Later test groups are added here as systems are built.
             RunAll(repoRoot);
             Console.WriteLine($"\n{Check.Passed} checks passed, {Check.Failures} failed.");
