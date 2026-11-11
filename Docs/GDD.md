@@ -29,7 +29,7 @@
 6. **Far-away human cities run as numbers** (abstract sim), not as tiles.
 
 Rough save size after 100+ hours: tens of MB, mostly buildings/entities — not terrain.
-- Milestone 1 uses a **small test map of Antarctica only**. [DECIDED]
+- Milestone 1 uses a **small test map of Antarctica only**: ~16 chunks (512 tiles) radius with a wobbly coastline, ocean beyond. Snow plateau with ~18% blue-ice fields and ~8% rock outcrops; resource patches on a jittered 24-tile grid; starter iron/copper/coal/stone patches 16 tiles N/E/S/W of the crash site. [BUILT]
 
 ## 2b. Terrain tiles (Antarctica)
 - Made by Claude (owner request 2026-11-10) with `Tools/terrain/generate_antarctica.py`. [DECIDED]
@@ -45,10 +45,38 @@ Rough save size after 100+ hours: tens of MB, mostly buildings/entities — not 
 | Topic | Status |
 |---|---|
 | Engine: Unity 6 LTS, URP 2D Renderer | [DECIDED] |
-| Netcode library | [PENDING — proposal to come before co-op work] |
-| Data format (ScriptableObjects vs JSON) | [PENDING — proposal to come before content work] |
-| Audio (Unity mixer vs FMOD) | [PENDING] |
+| Simulation / view split (below) | [BUILT — pending owner approval of the explanation] |
+| Netcode approach: deterministic lockstep (below); library chosen later | [PROPOSED] |
+| Data format: JSON in `Assets/StreamingAssets/Content` (below) | [BUILT — pending approval] |
+| Audio: Unity Audio Mixer (below) | [PROPOSED, nothing built] |
 | Compile check: owner opens Unity, reports Console errors | [DECIDED] |
+
+### 4a. Simulation vs view (built)
+The game rules live in `Assets/Scripts/Sim` and have **no Unity code at all**. Unity (`Assets/Scripts/Game`) only draws the state and feeds input in. Why:
+- Claude can compile and test the rules outside Unity (`dotnet run --project Tools/simtest`, 200+ checks), so bugs there are found before the owner tests.
+- Co-op later: the sim can run the same way on every PC.
+- The sim runs at a fixed **30 ticks per second**; all positions are integers (1 tile = 256 units), no floats. Same inputs → bit-identical results on any PC. `SaveSystem.StateHash` proves it (used in tests, will detect desyncs in co-op).
+
+### 4b. Netcode plan (proposed, nothing built)
+**Deterministic lockstep:** every player sends only their inputs (move/aim/build commands); every PC runs the identical simulation. This is what Factorio does. It is the natural fit because a factory with 10,000+ entities is far too much state to stream from a server, but inputs are tiny. The groundwork is already in: `PlayerInput` struct, integer math, seeded RNG, state hash. Library choice (Steam relay transport) is decided when co-op starts; it only has to carry small input packets, so almost any works.
+
+### 4c. Data format (built)
+Plain **JSON files** in `Assets/StreamingAssets/Content/` (`items.json`, `buildings.json`, `recipes.json`, `techs.json`, `terrain.json`, `resources.json`, `balance.json`, `loc_en.json`). Chosen over ScriptableObjects because: files are readable/diffable in Git, moddable without Unity, testable outside Unity, and `//` comments are allowed. The loader validates and lists problems in the Console. `balance.json` holds every tunable number.
+
+### 4d. Audio (proposed)
+**Unity Audio Mixer.** Free, built in, no extra licence or plugin; FMOD's strengths (adaptive music, designer tooling) are not needed for a solo project yet and it adds a licence step before release. Nothing is built; no audio files exist (`LICENSES.md` empty).
+
+## 4e. Rules built so far (Milestone 1) — all [BUILT, not owner-tested] unless marked
+- **Power:** wires and tubes are conductors and join each other side by side. Any other building joins a network when its footprint touches a conductor. Buildings do not pass power to each other directly. Each tick satisfaction = supply/demand (capped 100%); machines run at that speed. Pod reactor: 200 kW, decays to 10% over 2 hours. [PENDING approval of these rules]
+- **Logistics:** tubes carry items, data-wires carry data cells, 4 per tile, 1 tile per 8 ticks. Items hold when a tube is unpowered; wires never need power. Head-on conveyors do not connect. Arms take from the tile behind and drop on the tile in front (chest/machine/conveyor), 24 ticks per swing.
+- **Drill:** 3×3, mines the resource (or ice terrain) under it round-robin, 1 item / 60 ticks, pushes out its facing side into a tube/chest; stalls if blocked. Resources are infinite.
+- **Crafters** (smelter/assembler/encoder): one recipe chosen in the building's panel; inputs filtered to that recipe; arms feed/take. No recipes exist yet.
+- **Data center L1:** 4×4, accepts data cells, researches the head of the queue (max 10), 1 point/tick; cells consumed proportionally. Heat 2/tick, cooling = terrain cooling × heat rate (snow 1.2, ice 1.4, rock 1.0) so it never overheats in Antarctica; overheats at 1000 heat elsewhere and resumes at 50%.
+- **Player:** ~8 tiles/s (snow 90%, ice 110%), cannot walk through buildings except tubes/wires, cannot enter ocean. Temperature 1000 → drains 1/tick (+terrain), warmed near the pod (radius 4) and running smelters. Reaches 6 tiles. Hand mining 60 ticks per ore, 40 per ice. Shooting: 10 dmg, 12 tiles, every 10 ticks. Death = permadeath screen → reload last save.
+- **Saving:** binary file per slot (5 slots) in `%AppData%/../LocalLow/<company>/New_Gen/saves`. Manual save every 10 min (F5), Ironman 60 min and no autosave; autosave on quit/return to menu otherwise. Only changed tiles are stored.
+- **Buildings are free to place** (no cost) until recipes exist.
+- **Chunk streaming:** chunks beyond 5 chunks from the player with no buildings and no changed tiles are unloaded.
+
 
 ## 5. Art
 - **64×64 px tiles**, 3/4 top-down, Pixels Per Unit 64, point filtering. [DECIDED — briefly 128 on 2026-11-09, reverted to 64 on 2026-11-10]

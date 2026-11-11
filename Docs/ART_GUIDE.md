@@ -47,6 +47,7 @@ All lowercase, underscores, no spaces, **PNG only**.
 
 - Building states: `idle`, `damaged`, `destroyed`. (**Working** glow is done with a 2D light — no extra drawing.)
 - **Animations:** end the name with `_<N>f` where N = number of frames, e.g. `_4f`. The image must be exactly N frames wide in one row. The game slices it automatically.
+- **Tubes/wires orientation:** draw `bld_tube_straight` / `bld_wire_straight` **flowing from the bottom to the top** of the tile. Draw `bld_tube_corner` / `bld_wire_corner` **entering from the left edge and leaving through the top**. The game rotates/mirrors them for every other case. `bld_arm` points **up** (it drops items at the top).
 - If your file has the same name as a placeholder, **yours replaces it automatically**. You can put files in subfolders inside `Sprites/` if you like — only the file name matters.
 
 ### What the import pipeline does to your files
@@ -97,7 +98,10 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `bld_drill_<state>` | 192×224 | 1 | **3×3**. Mining drill ("Miner MK1"). |
 | `bld_drill_idle` | 192×224 | 1 | Default look = frame 1 of the animation (powered, not running). |
 | `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224, 3 frames); `bld_drill_working_left_5f` (960×224, 5 frames) | — | 3 / 5 | Working animation, **one per output side** (the side the ore comes out). Frames 1, 2, 3 side by side (192×224 each), looped, **0.10 s per frame**. |
-| `bld_drill_nopower` | 192×224 | 1 | Drill with no power. A flashing no-power icon will be drawn over it later (separate sprite, TBD). |
+| `bld_drill_nopower` | 192×224 | 1 | Drill with no power. (Any building can have a `_nopower` sprite; if missing the idle sprite is shown dimmed.) |
+| `icon_nopower`, `icon_missing_input`, `icon_overheat` | 24×24 | 1 | Small icons that **flash above a machine** when it has no power / is missing inputs / overheated. Transparent background. Must read at a glance. |
+| `fx_bullet` | 12×6 | 1 | The player's bullet, drawn pointing right. |
+| `tile_ocean_01` | 64×64 | 1 | Dark sea water past the coast (Claude will generate this later like the other terrain; placeholder for now). |
 | `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. |
 | `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
 | `bld_encoder_<state>` | 128×160 | 1 | 2×2. Data Cell encoder. |
@@ -149,5 +153,6 @@ Say **"Check"** and Claude lists what's left (compares this list with what's in 
 **Items** (32×32): `item_iron_ore`, `item_copper_ore`, `item_coal`, `item_stone`, `item_ice`, `item_iron_plate`, `item_copper_plate`
 **Data Cell** (32×32): `cell_resource`
 
-**No-power icon** (flashes over unpowered machines): name and size TBD — tell me when you start it.
+**Icons** (24×24, flash above machines): `icon_nopower`, `icon_missing_input`, `icon_overheat`
+**Bullet** (12×6): `fx_bullet`
 
