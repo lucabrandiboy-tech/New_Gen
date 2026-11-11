@@ -280,3 +280,4 @@ Newest at the bottom. These override anything earlier in this file.
 | 2026-11-10 | **Tile size back to 64×64 px** (128 reverted). PPU 64. Buildings = footprint × 64 wide, footprint × 64 + 32 px tall. Items/cells 32×32. Terrain regenerated at 64 px, simplified. |
 | 2026-11-10 | Drill (Miner MK1) footprint **3×3** (192×224 sprite). Has a 3-frame working animation `bld_drill_working_3f`, played very fast (~20 fps). |
 | 2026-11-11 | Drill animation speed = **0.10 s per frame** (replaces ~20 fps). Drill has `bld_drill_idle` (frame 1), `bld_drill_working_3f`, `bld_drill_nopower`. Owner will draw a flashing no-power icon to overlay unpowered machines. |
+| 2026-11-11 | Drill has a **different working animation per output side** (right/left/up/down): `bld_drill_working_<side>_3f`. Exception to "one sprite per building". When owner says **"Check"**, list everything from ART_GUIDE §7 not yet in `Assets/Art/Sprites/`. |

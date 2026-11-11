@@ -17,3 +17,4 @@
 ## Warnings
 - GitHub repo New_Gen may still be **public** — confirm it's private.
 - Extra repo `New_Generation` was created by Unity Hub; unused. Owner can delete it.
+- Terrain tiles (64 px) are committed locally in Claude's session but **not on GitHub**: this environment blocks the Git LFS host and the owner declined allowing it. Needs another way to deliver (TBD).

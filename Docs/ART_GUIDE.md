@@ -96,7 +96,7 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `bld_crashpod_<state>` | 192×224 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
 | `bld_drill_<state>` | 192×224 | 1 | **3×3**. Mining drill ("Miner MK1"). |
 | `bld_drill_idle` | 192×224 | 1 | Default look = frame 1 of the animation (powered, not running). |
-| `bld_drill_working_3f` | 576×224 | 3 | Working animation: frames 1, 2, 3 side by side (192×224 each), looped, **0.10 s per frame**. |
+| `bld_drill_working_right_3f`, `_left_3f`, `_up_3f`, `_down_3f` | 576×224 | 3 | Working animation, **one per output side** (the side the ore comes out). Frames 1, 2, 3 side by side (192×224 each), looped, **0.10 s per frame**. |
 | `bld_drill_nopower` | 192×224 | 1 | Drill with no power. A flashing no-power icon will be drawn over it later (separate sprite, TBD). |
 | `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. |
 | `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
@@ -120,4 +120,34 @@ You asked me to make the Antarctica terrain, so it lives in `Assets/Art/Generate
   - Snow: `#A0B2CF` `#BACAE2` `#CFDCEE` `#E1EAF7` `#F1F6FD`
   - Blue ice: `#3A68A0` `#4E82B8` `#659BCC` `#82B4DD` `#A5CDEB`
   - Rock: `#222129` `#32313A` `#44424C` `#595660` `#726E77`
+
+---
+
+## 7. "Check" — still to draw before Milestone 1 is finished
+Say **"Check"** and Claude lists what's left (compares this list with what's in `Assets/Art/Sprites/`). Terrain is done by Claude.
+
+**Player** (64×64 per frame)
+- `unit_player_idle_down`, `unit_player_idle_up`, `unit_player_idle_side`
+- `unit_player_walk_down_4f`, `unit_player_walk_up_4f`, `unit_player_walk_side_4f`
+
+**Crash pod** (3×3 → 192×224): `bld_crashpod_idle`, `_damaged`, `_destroyed`
+
+**Drill / Miner MK1** (3×3 → 192×224)
+- `bld_drill_idle`, `bld_drill_nopower`, `bld_drill_damaged`, `bld_drill_destroyed`
+- `bld_drill_working_right_3f`, `_left_3f`, `_up_3f`, `_down_3f` (576×224 each)
+
+**Smelter** (2×2 → 128×160): `bld_smelter_idle`, `_damaged`, `_destroyed`
+**Assembler** (3×3 → 192×224): `bld_assembler_idle`, `_damaged`, `_destroyed`
+**Data Cell encoder** (2×2 → 128×160): `bld_encoder_idle`, `_damaged`, `_destroyed`
+**Data Center L1** (4×4 → 256×288): `bld_datacenter_l1_idle`, `_damaged`, `_destroyed`
+**Chest** (1×1 → 64×96): `bld_chest_idle`, `_damaged`, `_destroyed`
+
+**Logistics** (64×64, flat): `bld_tube_straight`, `bld_tube_corner`, `bld_wire_straight`, `bld_wire_corner`, `bld_arm`
+
+**Resource patches** (64×64, transparent around the ore): `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01`
+
+**Items** (32×32): `item_iron_ore`, `item_copper_ore`, `item_coal`, `item_stone`, `item_ice`, `item_iron_plate`, `item_copper_plate`
+**Data Cell** (32×32): `cell_resource`
+
+**No-power icon** (flashes over unpowered machines): name and size TBD — tell me when you start it.
 
