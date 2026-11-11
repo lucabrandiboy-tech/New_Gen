@@ -13,6 +13,7 @@ namespace NewGen.SimTest
             WorldTests.Run(repoRoot);
             EntityTests.Run(repoRoot);
             PowerTests.Run(repoRoot);
+            LogisticsTests.Run(repoRoot);
             // Later test groups are added here as systems are built.
             RunAll(repoRoot);
             Console.WriteLine($"\n{Check.Passed} checks passed, {Check.Failures} failed.");
