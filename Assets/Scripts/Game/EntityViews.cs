@@ -54,7 +54,7 @@ namespace NewGen.Game
             icon = MakeSprite(transform, "icon", body.sortingOrder + 2);
             icon.transform.localPosition = new Vector3(B.Width / 2f, B.Height / 2f + 0.3f, 0f);
             icon.enabled = false;
-            if (B is ArmBuilding) { hand = MakeSprite(pivot, "hand", body.sortingOrder + 1); hand.enabled = false; }
+            if (B is ArmBuilding) { hand = MakeSprite(transform, "hand", body.sortingOrder + 1); hand.enabled = false; }
             if (B.Def.Kind != Sim.Content.BuildingKind.Tube && B.Def.Kind != Sim.Content.BuildingKind.Wire && B.Def.Kind != Sim.Content.BuildingKind.Chest)
             {
                 var lgo = new GameObject("glow"); lgo.transform.SetParent(pivot, false);
@@ -96,7 +96,25 @@ namespace NewGen.Game
                 ApplyStateTint();
                 return;
             }
-            if (B is ArmBuilding) { body.sprite = SpriteRegistry.Get("bld_arm"); ApplyStateTint(); return; }
+            if (B is ArmBuilding)
+            {
+                // Factorio-style: occupies 1 tile, picture reaches over the neighbours.
+                // Owner draws only "side" (facing right, 3x3 tiles, base bottom-middle) and "up" (1x2 tiles, base at bottom).
+                bool side = B.Facing == Dir.East || B.Facing == Dir.West;
+                string baseKey = side ? "bld_arm_side" : "bld_arm_up";
+                pivot.localRotation = Quaternion.identity;
+                frames = B.State == BuildingState.Working ? SpriteRegistry.TryGetFrames(baseKey + "_working") : null;
+                if (frames != null && frames.Length <= 1) frames = null;
+                body.sprite = frames != null ? frames[0] : SpriteRegistry.Get(baseKey + "_idle");
+                // sprites have a bottom-left pivot: shift so the base tile lands on this building's tile
+                float sx = B.Facing == Dir.West ? -1f : 1f, sy = B.Facing == Dir.South ? -1f : 1f;
+                body.transform.localScale = new Vector3(sx, sy, 1f);
+                float x = side ? (B.Facing == Dir.East ? -1f : 2f) : 0f;      // East: image spans x-1..x+2; West: mirrored around x+2
+                float y = B.Facing == Dir.South ? 0f : 0f;
+                if (B.Facing == Dir.South) y = 1f;                            // flipped vertically: image spans y-1..y+1 with pivot at y+1
+                body.transform.localPosition = new Vector3(x - 0.5f, y - 0.5f, 0f);
+                ApplyStateTint(); return;
+            }
 
             switch (B.State)
             {
@@ -139,7 +157,11 @@ namespace NewGen.Game
                 UpdateConveyorItems(conv);
                 return;
             }
-            if (B is ArmBuilding arm) { UpdateArm(arm); return; }
+            if (B is ArmBuilding arm)
+            {
+                if (frames != null) { animTime += dt; body.sprite = frames[(int)(animTime * AnimFps) % frames.Length]; }
+                UpdateArm(arm); return;
+            }
             if (frames != null)
             {
                 animTime += dt;
@@ -185,7 +207,9 @@ namespace NewGen.Game
             hand.transform.localScale = Vector3.one * 0.7f;
             float full = arm.Def.ArmTicksPerSwing * 1000f;
             float t = Mathf.Clamp01(arm.SwingProgress / full);        // 0 = over the back tile, 1 = over the front tile
-            hand.transform.localPosition = new Vector3(0f, Mathf.Lerp(-1f, 1f, t), 0f);   // pivot is rotated with the arm
+            var back = WorldSpace.TileCenter(arm.BackTile()) - transform.position;
+            var front = WorldSpace.TileCenter(arm.FrontTile()) - transform.position;
+            hand.transform.localPosition = Vector3.Lerp(back, front, t) + new Vector3(0f, 0.3f, 0f);
         }
     }
 

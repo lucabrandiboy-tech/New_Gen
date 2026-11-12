@@ -47,7 +47,7 @@ All lowercase, underscores, no spaces, **PNG only**.
 
 - Building states: `idle`, `damaged`, `destroyed`. (**Working** glow is done with a 2D light — no extra drawing.)
 - **Animations:** end the name with `_<N>f` where N = number of frames, e.g. `_4f`. The image must be exactly N frames wide in one row. The game slices it automatically.
-- **Tubes/wires orientation:** draw `bld_tube_straight` / `bld_wire_straight` **flowing from the bottom to the top** of the tile. Draw `bld_tube_corner` / `bld_wire_corner` **entering from the left edge and leaving through the top**. The game rotates/mirrors them for every other case. `bld_arm` points **up** (it drops items at the top).
+- **Tubes/wires orientation:** draw `bld_tube_straight` / `bld_wire_straight` **flowing from the bottom to the top** of the tile. Draw `bld_tube_corner` / `bld_wire_corner` **entering from the left edge and leaving through the top**. The game rotates/mirrors them for every other case. Arms are special: see their rows in §5 (one picture facing right, one facing up; the game mirrors/flips the rest).
 - If your file has the same name as a placeholder, **yours replaces it automatically**. You can put files in subfolders inside `Sprites/` if you like — only the file name matters.
 
 ### What the import pipeline does to your files
@@ -107,9 +107,12 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `bld_encoder_<state>` | 128×160 | 1 | 2×2. Data Cell encoder. |
 | `bld_datacenter_l1_<state>` | 256×288 | 1 | 4×4. Level 1 Data Center. Important target — should look valuable. |
 | `bld_chest_<state>` | 64×96 | 1 | 1×1. Storage chest. |
-| `bld_tube_straight`, `bld_tube_corner` | 64×64 | 1 | Flat, seen from above. Straight runs left↔right; corner connects left↔down. Game rotates them. |
+| `bld_tube_straight`, `bld_tube_corner` | 64×64 | 1 | Flat, seen from above. Straight flows bottom→top; corner enters from the left, leaves at the top. Game rotates them. |
 | `bld_wire_straight`, `bld_wire_corner` | 64×64 | 1 | Same as tubes, for data-wires. |
-| `bld_arm` | 64×64 | 1 | Arm, pointing up. Game rotates it. (Animation later.) |
+| `bld_arm_side_idle` | 192×192 | 1 | Arm **facing right**, still. Occupies only the **bottom-middle tile**; the picture reaches over the tile to its left (grabs there) and right (drops there). Game mirrors it for left. |
+| `bld_arm_side_working_<N>f` | N×192 wide × 192 | N | Same arm moving an item from left to right. You choose N. |
+| `bld_arm_up_idle` | 64×128 | 1 | Arm **facing up**, still. Occupies the **bottom tile**; the top tile is where it drops. Game flips it for down. |
+| `bld_arm_up_working_<N>f` | N×64 wide × 128 | N | Same arm moving an item upward. |
 
 `<state>` = `idle`, `damaged`, `destroyed` → 3 files per building.
 
@@ -146,7 +149,8 @@ Say **"Check"** and Claude lists what's left (compares this list with what's in 
 **Data Center L1** (4×4 → 256×288): `bld_datacenter_l1_idle`, `_damaged`, `_destroyed`
 **Chest** (1×1 → 64×96): `bld_chest_idle`, `_damaged`, `_destroyed`
 
-**Logistics** (64×64, flat): `bld_tube_straight`, `bld_tube_corner`, `bld_wire_straight`, `bld_wire_corner`, `bld_arm`
+**Logistics** (64×64, flat): `bld_tube_straight`, `bld_tube_corner`, `bld_wire_straight`, `bld_wire_corner`
+**Arm**: `bld_arm_side_idle` (192×192), `bld_arm_side_working_<N>f`, `bld_arm_up_idle` (64×128), `bld_arm_up_working_<N>f`
 
 **Resource patches** (64×64, transparent around the ore): `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01`
 

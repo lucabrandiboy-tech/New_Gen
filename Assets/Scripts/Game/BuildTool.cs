@@ -54,11 +54,16 @@ namespace NewGen.Game
         Sprite GhostSprite(BuildingDef def)
         {
             if (def.IsConveyor) return SpriteRegistry.Get("bld_" + def.Id + "_straight");
-            if (def.Kind == BuildingKind.Arm) return SpriteRegistry.Get("bld_arm");
+            if (def.Kind == BuildingKind.Arm) return SpriteRegistry.Get(Facing == Dir.East || Facing == Dir.West ? "bld_arm_side_idle" : "bld_arm_up_idle");
             return SpriteRegistry.Get("bld_" + def.Id + "_idle");
         }
 
-        public void Rotate() { if (Selected != null && root.Db.Building(Selected).Rotatable) Facing = Facing.RotateCW(); }
+        public void Rotate()
+        {
+            if (Selected == null || !root.Db.Building(Selected).Rotatable) return;
+            Facing = Facing.RotateCW();
+            ghostSprite.sprite = GhostSprite(root.Db.Building(Selected));
+        }
 
         /// <summary>Origin so that the cursor sits in the middle of the footprint.</summary>
         TilePos OriginFor(BuildingDef def, TilePos cursor)
@@ -134,11 +139,19 @@ namespace NewGen.Game
         void UpdateGhost(BuildingDef def, TilePos origin, int w, int h, bool ok)
         {
             ghost.gameObject.SetActive(true);
-            bool rotates = def.IsConveyor || def.Kind == BuildingKind.Arm;
+            bool rotates = def.IsConveyor;
+            bool arm = def.Kind == BuildingKind.Arm;
             ghost.position = WorldSpace.TileCorner(origin) + (rotates ? new Vector3(0.5f, 0.5f, 0f) : Vector3.zero);
             ghost.rotation = rotates ? Quaternion.Euler(0f, 0f, WorldSpace.FacingAngle(Facing)) : Quaternion.identity;
             // sprites have a bottom-left pivot; for rotating 1x1 pieces offset so they spin around the tile centre
             ghostSprite.transform.localPosition = rotates ? new Vector3(-0.5f, -0.5f, 0f) : Vector3.zero;
+            ghostSprite.transform.localScale = Vector3.one;
+            if (arm)
+            {
+                bool side = Facing == Dir.East || Facing == Dir.West;
+                ghostSprite.transform.localScale = new Vector3(Facing == Dir.West ? -1f : 1f, Facing == Dir.South ? -1f : 1f, 1f);
+                ghostSprite.transform.localPosition = new Vector3(side ? (Facing == Dir.East ? -1f : 2f) : 0f, Facing == Dir.South ? 1f : 0f, 0f);
+            }
             ghostSprite.color = ok ? new Color(0.4f, 1f, 0.5f, 0.55f) : new Color(1f, 0.3f, 0.3f, 0.55f);
         }
 
