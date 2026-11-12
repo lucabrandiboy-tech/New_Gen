@@ -87,8 +87,8 @@ namespace NewGen.EditorTools.Art
             foreach (string n in new[] { "bld_tube_straight", "bld_tube_corner", "bld_wire_straight", "bld_wire_corner" })
                 list.Add(new Spec(n, Kind.Logistics, T, T, footW: 1, footH: 1));
             // Arm occupies 1 tile but its picture reaches over the neighbours (Factorio-style).
-            list.Add(new Spec("bld_arm_side_idle", Kind.Logistics, 3 * T, 3 * T, footW: 1, footH: 1));   // facing right; base = bottom-middle tile
-            list.Add(new Spec("bld_arm_up_idle", Kind.Logistics, T, 2 * T, footW: 1, footH: 1));         // facing up; base = bottom tile
+            list.Add(new Spec("bld_arm_side_idle", Kind.Logistics, 3 * T, 3 * T + RoofOverhang, footW: 1, footH: 1));   // facing right; base = bottom-middle tile
+            list.Add(new Spec("bld_arm_up_idle", Kind.Logistics, T, 2 * T + RoofOverhang, footW: 1, footH: 1));         // facing up; base = bottom tile
 
             // HUD/world icons drawn over machines (owner will draw the real ones) and the bullet
             foreach (string n in new[] { "icon_nopower", "icon_missing_input", "icon_overheat" })

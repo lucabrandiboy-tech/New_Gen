@@ -285,3 +285,4 @@ Newest at the bottom. These override anything earlier in this file.
 | 2026-11-11 | Tube/wire sprite orientation: straight flows bottom→top, corner enters left exits top, arm points up (ART_GUIDE §3). |
 | 2026-11-11 | `lfs.github.com` allowed in Claude's cloud environment (owner approved) so terrain tiles could be pushed. |
 | 2026-11-12 | **Arm sprites are oversized**: footprint 1 tile; picture 3×3 for left/right (base bottom-middle), 1×2 for up/down (base bottom). Owner draws right + up only, with working animations `bld_arm_side_working_<N>f` / `bld_arm_up_working_<N>f`; game mirrors/flips. |
+| 2026-11-12 | Arm pictures get the usual +32 px height: side **192×224**, up **64×160**. |

@@ -109,10 +109,10 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `bld_chest_<state>` | 64×96 | 1 | 1×1. Storage chest. |
 | `bld_tube_straight`, `bld_tube_corner` | 64×64 | 1 | Flat, seen from above. Straight flows bottom→top; corner enters from the left, leaves at the top. Game rotates them. |
 | `bld_wire_straight`, `bld_wire_corner` | 64×64 | 1 | Same as tubes, for data-wires. |
-| `bld_arm_side_idle` | 192×192 | 1 | Arm **facing right**, still. Occupies only the **bottom-middle tile**; the picture reaches over the tile to its left (grabs there) and right (drops there). Game mirrors it for left. |
-| `bld_arm_side_working_<N>f` | N×192 wide × 192 | N | Same arm moving an item from left to right. You choose N. |
-| `bld_arm_up_idle` | 64×128 | 1 | Arm **facing up**, still. Occupies the **bottom tile**; the top tile is where it drops. Game flips it for down. |
-| `bld_arm_up_working_<N>f` | N×64 wide × 128 | N | Same arm moving an item upward. |
+| `bld_arm_side_idle` | 192×224 | 1 | Arm **facing right**, still. Occupies only the **bottom-middle tile**; the picture reaches over the tile to its left (grabs there) and right (drops there). Game mirrors it for left. |
+| `bld_arm_side_working_<N>f` | N×192 wide × 224 | N | Same arm moving an item from left to right. You choose N. |
+| `bld_arm_up_idle` | 64×160 | 1 | Arm **facing up**, still. Occupies the **bottom tile**; the top tile is where it drops. Game flips it for down. |
+| `bld_arm_up_working_<N>f` | N×64 wide × 160 | N | Same arm moving an item upward. |
 
 `<state>` = `idle`, `damaged`, `destroyed` → 3 files per building.
 
@@ -150,7 +150,7 @@ Say **"Check"** and Claude lists what's left (compares this list with what's in 
 **Chest** (1×1 → 64×96): `bld_chest_idle`, `_damaged`, `_destroyed`
 
 **Logistics** (64×64, flat): `bld_tube_straight`, `bld_tube_corner`, `bld_wire_straight`, `bld_wire_corner`
-**Arm**: `bld_arm_side_idle` (192×192), `bld_arm_side_working_<N>f`, `bld_arm_up_idle` (64×128), `bld_arm_up_working_<N>f`
+**Arm**: `bld_arm_side_idle` (192×224), `bld_arm_side_working_<N>f`, `bld_arm_up_idle` (64×160), `bld_arm_up_working_<N>f`
 
 **Resource patches** (64×64, transparent around the ore): `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01`
 
