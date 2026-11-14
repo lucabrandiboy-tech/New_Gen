@@ -3,6 +3,11 @@
 > Always current. **Nothing in this project has been run in Unity since the art-pipeline test on 2026-11-09.**
 
 ## Status (2026-11-14)
+- **Making it playable without art**: any sprite that does not exist is now drawn as a plain coloured
+  box of the correct size (`Assets/Scripts/Game/FallbackArt.cs`) — buildings, player, items, bullets,
+  terrain and ore all have one. Placeholder PNGs are also generated automatically when some are
+  missing, and pressing Play in **any** scene creates the Game object if it is not there
+  (`GameRoot.AutoBootstrap`). So Play should always start something; none of this has been run yet.
 - **Unity compiles the project** (owner confirmed). Nothing has been *run* yet — Play mode, the
   menu, the map, building and the HUD are all still untested.
 - Fixes that got it compiling: `Tile` was ambiguous in `TerrainRenderer` (our map tile vs Unity's
@@ -18,7 +23,10 @@
 - **Unity layer (`Assets/Scripts/Game`, `Assets/Scripts/Editor/SceneSetup.cs`)**: compiles in Unity, never run.
 
 ## Unfinished / not built (Milestone 1 scope)
-- **No recipes** (owner decision): smelter/assembler/encoder can be placed and given power but cannot craft; hand crafting list is empty. Data cells can only be obtained with the dev console (`give cell_resource 100`).
+- **No recipes** (owner decision, until the art is done): smelter/assembler/encoder can be placed and
+  powered but cannot craft, and the hand-crafting list is empty. So the playable loop right now is:
+  walk, hand-mine ore and ice, place buildings, drill ore onto belts, arms and chests move it around,
+  research only via the dev console (`give cell_resource 100`).
 - **Buildings cost nothing** to place until recipes exist.
 - **Tech tree**: one placeholder tech (`first_contact`). The real tier × branch chart needs owner approval.
 - **No ground items**: inventory overflow (e.g. removing a full chest with a full inventory) is lost.

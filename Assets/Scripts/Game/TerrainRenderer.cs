@@ -86,7 +86,7 @@ namespace NewGen.Game
                     var t = sim.World.GetTile(new TilePos(x, y));
                     int i = Chunk.Index(lx, ly);
                     ground[i] = TerrainTile(sim.Db.Terrain(t.Terrain).Id, x, y);
-                    res[i] = t.Resource == 0 ? null : GetTile(sim.Db.Resource(t.Resource).SpriteKey);
+                    res[i] = t.Resource == 0 ? null : ResourceTile(sim.Db.Resource(t.Resource));
                 }
             var bounds = new BoundsInt(ox, oy, 0, Chunk.Size, Chunk.Size, 1);
             terrain.SetTilesBlock(bounds, ground);
@@ -109,7 +109,7 @@ namespace NewGen.Game
             var t = root.Sim.World.GetTile(p);
             var cell = new Vector3Int(p.X, p.Y, 0);
             terrain.SetTile(cell, TerrainTile(root.Sim.Db.Terrain(t.Terrain).Id, p.X, p.Y));
-            resources.SetTile(cell, t.Resource == 0 ? null : GetTile(root.Sim.Db.Resource(t.Resource).SpriteKey));
+            resources.SetTile(cell, t.Resource == 0 ? null : ResourceTile(root.Sim.Db.Resource(t.Resource)));
         }
 
         TileBase TerrainTile(string terrainId, int x, int y)
@@ -117,8 +117,47 @@ namespace NewGen.Game
             // Block rows are numbered from the top; world y grows upward.
             int row = 7 - Hash.FloorMod(y, 8), col = Hash.FloorMod(x, 8);
             int nn = row * 8 + col + 1;
-            var tile = GetTile($"tile_{terrainId}_{nn:00}", false);
-            return tile ?? GetTile($"tile_{terrainId}_01");
+            var tile = GetTile($"tile_{terrainId}_{nn:00}", false)
+                    ?? GetTile($"tile_{terrainId}_01", false);
+            // Nothing drawn for this terrain yet: show a flat colour rather than a hole in the world.
+            return tile ?? FallbackTile("terrain:" + terrainId, TerrainColor(terrainId));
+        }
+
+        TileBase ResourceTile(Sim.Content.ResourceDef res)
+            => GetTile(res.SpriteKey, false) ?? FallbackTile("res:" + res.Id, ResourceColor(res.Id));
+
+        static Color32 TerrainColor(string id)
+        {
+            switch (id)
+            {
+                case "snow": return new Color32(225, 234, 247, 255);
+                case "ice": return new Color32(101, 155, 204, 255);
+                case "rock": return new Color32(68, 66, 76, 255);
+                case "ocean": return new Color32(22, 38, 66, 255);
+                default: return new Color32(140, 140, 150, 255);
+            }
+        }
+
+        static Color32 ResourceColor(string id)
+        {
+            switch (id)
+            {
+                case "iron": return new Color32(150, 110, 90, 255);
+                case "copper": return new Color32(190, 120, 70, 255);
+                case "coal": return new Color32(45, 45, 50, 255);
+                case "stone": return new Color32(140, 135, 125, 255);
+                default: return new Color32(150, 110, 70, 255);
+            }
+        }
+
+        TileBase FallbackTile(string key, Color32 color)
+        {
+            if (tileCache.TryGetValue(key, out var cached) && cached != null) return cached;
+            var t = ScriptableObject.CreateInstance<UnityTile>();
+            t.sprite = FallbackArt.Box(64, 64, color, false);
+            t.colliderType = UnityTile.ColliderType.None;
+            tileCache[key] = t;
+            return t;
         }
 
         TileBase GetTile(string key, bool warn = true)

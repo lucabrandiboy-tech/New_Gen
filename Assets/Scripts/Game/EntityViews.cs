@@ -98,8 +98,8 @@ namespace NewGen.Game
             body.transform.localScale = Vector3.one;
             body.transform.localPosition = new Vector3(-B.Width / 2f, -B.Height / 2f, 0f);
 
-            if (B is ConveyorBuilding conv) { RefreshConveyor(conv, id); return; }
-            if (B is ArmBuilding) { body.sprite = SpriteRegistry.Get("bld_arm_idle"); ApplyStateTint(); return; }
+            if (B is ConveyorBuilding conv) { RefreshConveyor(conv, id); EnsureVisible(); ApplyStateTint(); return; }
+            if (B is ArmBuilding) { body.sprite = SpriteRegistry.TryGet("bld_arm_idle"); EnsureVisible(); ApplyStateTint(); return; }
 
             switch (B.State)
             {
@@ -123,8 +123,19 @@ namespace NewGen.Game
                 default: body.sprite = SpriteRegistry.Get("bld_" + id + "_idle"); break;
             }
             if (glow != null) glow.enabled = B.State == BuildingState.Working;
+            EnsureVisible();
             ApplyBrokenOverlay(id);
             ApplyStateTint();
+        }
+
+        /// <summary>No sprite for this building yet? Draw a plain coloured box of the right size.</summary>
+        void EnsureVisible()
+        {
+            if (body.sprite != null) return;
+            body.sprite = FallbackArt.Building(B.Width, B.Height, FallbackArt.ColorFor(B.Def.Kind));
+            body.transform.localPosition = new Vector3(-B.Width / 2f, -B.Height / 2f, 0f);
+            body.transform.localScale = Vector3.one;
+            pivot.localRotation = Quaternion.identity;
         }
 
         /// <summary>
@@ -146,7 +157,8 @@ namespace NewGen.Game
                 return;
             }
 
-            var sprite = SpriteRegistry.Get(destroyed ? "bld_destroyed" : "bld_damaged");
+            var sprite = SpriteRegistry.TryGet(destroyed ? "bld_destroyed" : "bld_damaged")
+                      ?? FallbackArt.Box(64, 64, destroyed ? new Color32(70, 60, 55, 255) : new Color32(200, 60, 50, 150), true);
             body.enabled = !destroyed;                      // rubble replaces the building entirely
             if (brokenTiles == null)
             {
@@ -182,7 +194,8 @@ namespace NewGen.Game
             else
             {
                 bool corner = conv.FeedFrom.HasValue && conv.FeedFrom.Value != B.Facing.Opposite();
-                body.sprite = SpriteRegistry.Get("bld_" + id + (corner ? "_corner" : "_straight"));
+                body.sprite = SpriteRegistry.TryGet("bld_" + id + (corner ? "_corner" : "_straight"));
+                if (body.sprite == null) return;   // no belt art at all: EnsureVisible draws a box
                 pivot.localRotation = Quaternion.Euler(0f, 0f, WorldSpace.FacingAngle(B.Facing));
                 if (corner && conv.FeedFrom.Value == B.Facing.RotateCW())
                 {
@@ -191,7 +204,6 @@ namespace NewGen.Game
                 }
             }
             lastFeed = conv.FeedFrom; lastFacing = B.Facing;
-            ApplyStateTint();
         }
 
         void ApplyStateTint()
@@ -243,7 +255,8 @@ namespace NewGen.Game
                 var it = conv.Items[i];
                 sr.enabled = true;
                 var def = Root.Db.Item(it.Item);
-                sr.sprite = SpriteRegistry.Get(def != null ? def.SpriteKey : "item_" + it.Item);
+                sr.sprite = SpriteRegistry.TryGet(def != null ? def.SpriteKey : "item_" + it.Item)
+                         ?? FallbackArt.Box(32, 32, new Color32(230, 190, 60, 255), false);
                 float t = it.Pos / (float)Fix.SubPerTile - 0.5f;
                 sr.transform.localPosition = new Vector3(0.5f + d.X * t, 0.5f + d.Y * t, 0f);
             }
@@ -255,7 +268,8 @@ namespace NewGen.Game
             hand.enabled = show;
             if (!show) return;
             var def = Root.Db.Item(arm.Holding);
-            hand.sprite = SpriteRegistry.Get(def != null ? def.SpriteKey : "item_" + arm.Holding);
+            hand.sprite = SpriteRegistry.TryGet(def != null ? def.SpriteKey : "item_" + arm.Holding)
+                       ?? FallbackArt.Box(32, 32, new Color32(230, 190, 60, 255), false);
             hand.transform.localScale = Vector3.one * 0.7f;
             var from = WorldSpace.TileCenter(arm.InputTile) - transform.position;
             var to = WorldSpace.TileCenter(arm.OutputTile) - transform.position;
@@ -296,10 +310,11 @@ namespace NewGen.Game
             if (P.Moving)
             {
                 animTime += dt;
-                var frames = SpriteRegistry.GetFrames("unit_player_walk_" + dir);
-                body.sprite = frames != null && frames.Length > 0 ? frames[(int)(animTime * 8f) % frames.Length] : SpriteRegistry.Get("unit_player_idle_" + dir);
+                var frames = SpriteRegistry.TryGetFrames("unit_player_walk_" + dir);
+                body.sprite = frames != null && frames.Length > 0 ? frames[(int)(animTime * 8f) % frames.Length] : SpriteRegistry.TryGet("unit_player_idle_" + dir);
             }
-            else { animTime = 0f; body.sprite = SpriteRegistry.Get("unit_player_idle_" + dir); }
+            else { animTime = 0f; body.sprite = SpriteRegistry.TryGet("unit_player_idle_" + dir); }
+            if (body.sprite == null) body.sprite = FallbackArt.Box(64, 64, new Color32(210, 70, 70, 255), false);
             body.color = P.Dead ? new Color(0.4f, 0.4f, 0.5f) : Color.white;
         }
     }
@@ -313,7 +328,7 @@ namespace NewGen.Game
             base.Init(root, e);
             pr = (Projectile)e;
             body = MakeSprite(transform, "body", 4000);
-            body.sprite = SpriteRegistry.Get("fx_bullet");
+            body.sprite = SpriteRegistry.TryGet("fx_bullet") ?? FallbackArt.Box(12, 6, new Color32(255, 240, 150, 255), false);
             transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(pr.VelY, pr.VelX) * Mathf.Rad2Deg);
         }
         public override void Tick(float dt) { transform.position = WorldSpace.ToUnity(pr.Pos); }

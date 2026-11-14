@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace UnityEditor
 {
+    [AttributeUsage(AttributeTargets.Class)] public class InitializeOnLoad : Attribute { }
+
     [AttributeUsage(AttributeTargets.Method)]
     public class MenuItem : Attribute { public MenuItem(string path, bool validate = false, int priority = 0) { } }
 

@@ -42,6 +42,19 @@ namespace NewGen.Game
         public string SaveDir => Path.Combine(Application.persistentDataPath, "saves");
         public string SlotPath(int slot) => Path.Combine(SaveDir, "slot" + slot + ".ngs");
 
+        /// <summary>
+        /// Makes Play work from any scene: if the scene has no Game object, one is created.
+        /// Nothing else in the project needs setting up by hand.
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        static void AutoBootstrap()
+        {
+            if (Instance != null) return;
+            if (FindObjectsByType<GameRoot>(FindObjectsSortMode.None).Length > 0) return;
+            var go = new GameObject("Game (auto)");
+            go.AddComponent<GameRoot>();
+        }
+
         void Awake()
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }

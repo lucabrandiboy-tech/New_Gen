@@ -191,6 +191,8 @@ namespace UnityEngine
     public class Texture2D : Object
     {
         public Texture2D(int w, int h, TextureFormat f, bool mipmaps) { }
+        public FilterMode filterMode { get; set; }
+        public TextureWrapMode wrapMode { get; set; }
         public void SetPixels32(Color32[] px) { }
         public void Apply() { }
         public void Apply(bool a, bool b) { }
@@ -239,6 +241,9 @@ namespace UnityEngine
     }
 
     [AttributeUsage(AttributeTargets.Field)] public class SerializeField : Attribute { }
+    public enum RuntimeInitializeLoadType { AfterSceneLoad, BeforeSceneLoad, BeforeSplashScreen, SubsystemRegistration, AfterAssembliesLoaded }
+    [AttributeUsage(AttributeTargets.Method)] public class RuntimeInitializeOnLoadMethodAttribute : Attribute
+    { public RuntimeInitializeOnLoadMethodAttribute() { } public RuntimeInitializeOnLoadMethodAttribute(RuntimeInitializeLoadType t) { } }
     [AttributeUsage(AttributeTargets.Class)] public class SerializableAttribute2 : Attribute { }
     [AttributeUsage(AttributeTargets.All)] public class HeaderAttribute : Attribute { public HeaderAttribute(string h) { } }
     [AttributeUsage(AttributeTargets.All)] public class TooltipAttribute : Attribute { public TooltipAttribute(string t) { } }
