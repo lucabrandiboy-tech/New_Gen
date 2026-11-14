@@ -5,6 +5,7 @@ using NewGen.Sim.Core;
 using NewGen.Sim.World;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityTile = UnityEngine.Tilemaps.Tile;   // NewGen.Sim.World.Tile is the map tile; this is the tilemap asset
 
 namespace NewGen.Game
 {
@@ -124,12 +125,12 @@ namespace NewGen.Game
         {
             if (tileCache.TryGetValue(key, out var cached)) return cached;
             var sprite = warn ? SpriteRegistry.Get(key) : SpriteRegistry.TryGet(key);
-            Tile tile = null;
+            UnityTile tile = null;
             if (sprite != null)
             {
-                tile = ScriptableObject.CreateInstance<Tile>();
+                tile = ScriptableObject.CreateInstance<UnityTile>();
                 tile.sprite = sprite;
-                tile.colliderType = Tile.ColliderType.None;
+                tile.colliderType = UnityTile.ColliderType.None;
             }
             tileCache[key] = tile;
             return tile;

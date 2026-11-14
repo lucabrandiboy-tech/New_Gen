@@ -2,6 +2,16 @@
 
 > Always current. **Nothing in this project has been run in Unity since the art-pipeline test on 2026-11-09.**
 
+## Status (2026-11-14)
+- Owner opened the project in Unity: **compile errors**. Exact list not captured yet.
+- Two certain faults found and fixed by reading the code: `Tile` was ambiguous in `TerrainRenderer`
+  (our map tile vs Unity's tilemap tile), and `NewGen.Game.asmdef` did not reference `UnityEngine.UI`
+  (needed for every Text/Image/Button/EventSystem).
+- Added `Tools/unitycheck`: compiles the Unity-facing code against hand-written Unity API stubs, so
+  most of our own mistakes are caught here instead of costing the owner a round trip.
+  Run everything with `bash Tools/check.sh`. It cannot catch wrong Unity API usage or bad
+  .asmdef references.
+
 ## Status of the big build (2026-11-11)
 - **Simulation (`Assets/Scripts/Sim`)**: compiled and tested outside Unity — 209 checks pass (`dotnet run --project Tools/simtest`). It has never run inside Unity.
 - **Unity layer (`Assets/Scripts/Game`, `Assets/Scripts/Editor/SceneSetup.cs`)**: written and syntax-checked only. **It has never been compiled by Unity.** Expect compile errors on first open; paste them back.
