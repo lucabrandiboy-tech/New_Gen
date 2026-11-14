@@ -55,6 +55,7 @@ namespace NewGen.Game
             return (int)(animTime * fps) % frames.Length;
         }
         readonly List<SpriteRenderer> itemSprites = new List<SpriteRenderer>();
+        SpriteRenderer[] brokenTiles;   // shared damage/rubble art laid over every tile of the footprint
         int lastItemsVersion = -1, lastStateVersion = -1;
         Dir? lastFeed; Dir lastFacing;
 
@@ -102,8 +103,14 @@ namespace NewGen.Game
 
             switch (B.State)
             {
-                case BuildingState.Destroyed: body.sprite = SpriteRegistry.Get("bld_" + id + "_destroyed"); break;
-                case BuildingState.Damaged: body.sprite = SpriteRegistry.Get("bld_" + id + "_damaged"); break;
+                case BuildingState.Destroyed:
+                    // One shared rubble sprite replaces the building, tiled over its footprint.
+                    body.sprite = Find("bld_" + id + "_destroyed") ?? SpriteRegistry.Get("bld_" + id + "_idle");
+                    break;
+                case BuildingState.Damaged:
+                    // Idle art stays; one shared damage sprite is laid on top, tiled over the footprint.
+                    body.sprite = Find("bld_" + id + "_damaged") ?? SpriteRegistry.Get("bld_" + id + "_idle");
+                    break;
                 case BuildingState.NoPower: body.sprite = Find("bld_" + id + "_nopower") ?? SpriteRegistry.Get("bld_" + id + "_idle"); break;
                 case BuildingState.Working:
                     {
@@ -116,7 +123,47 @@ namespace NewGen.Game
                 default: body.sprite = SpriteRegistry.Get("bld_" + id + "_idle"); break;
             }
             if (glow != null) glow.enabled = B.State == BuildingState.Working;
+            ApplyBrokenOverlay(id);
             ApplyStateTint();
+        }
+
+        /// <summary>
+        /// The owner draws one damaged sprite and one destroyed sprite for the whole game instead of a
+        /// pair per building. They are 1 tile each and get repeated over the building's footprint.
+        /// A building that does have its own bld_&lt;id&gt;_damaged / _destroyed art uses that instead.
+        /// </summary>
+        void ApplyBrokenOverlay(string id)
+        {
+            bool destroyed = B.State == BuildingState.Destroyed;
+            bool damaged = B.State == BuildingState.Damaged;
+            bool ownArt = Find("bld_" + id + (destroyed ? "_destroyed" : "_damaged")) != null;
+            bool show = (destroyed || damaged) && !ownArt;
+
+            if (!show)
+            {
+                if (brokenTiles != null) foreach (var t in brokenTiles) t.enabled = false;
+                body.enabled = true;
+                return;
+            }
+
+            var sprite = SpriteRegistry.Get(destroyed ? "bld_destroyed" : "bld_damaged");
+            body.enabled = !destroyed;                      // rubble replaces the building entirely
+            if (brokenTiles == null)
+            {
+                brokenTiles = new SpriteRenderer[B.Width * B.Height];
+                for (int i = 0; i < brokenTiles.Length; i++)
+                {
+                    var sr = MakeSprite(transform, "broken" + i, body.sortingOrder + (destroyed ? 1 : 3));
+                    sr.transform.localPosition = new Vector3(i % B.Width, i / B.Width, 0f);
+                    brokenTiles[i] = sr;
+                }
+            }
+            foreach (var t in brokenTiles)
+            {
+                t.enabled = true;
+                t.sprite = sprite;
+                t.sortingOrder = body.sortingOrder + (destroyed ? 1 : 3);
+            }
         }
 
         /// <summary>

@@ -37,7 +37,8 @@ namespace NewGen.EditorTools.Art
 
         const int T = SpriteNaming.PixelsPerUnit; // one tile (64 px)
         const int RoofOverhang = T / 2; // extra height above the footprint for 3/4 view (PROPOSED)
-        static readonly string[] BuildingStates = { "idle", "damaged", "destroyed" };
+        // One drawing per building. "damaged" and "destroyed" are shared game-wide (see below).
+        static readonly string[] BuildingStates = { "idle" };
 
         public static IReadOnlyList<Spec> All => all ??= Build();
         static List<Spec> all;
@@ -75,8 +76,6 @@ namespace NewGen.EditorTools.Art
             // Frame count can differ per side (left has 5).
             foreach (var (side, frames) in new[] { ("right", 3), ("left", 5), ("up", 3), ("down", 3) })
                 list.Add(new Spec($"bld_drill_working_{side}", Kind.Building, 3 * T, 3 * T + RoofOverhang, frames: frames, footW: 3, footH: 3));
-            // Drill with no power (owner-drawn). A flashing "no power" icon will be drawn on top later.
-            list.Add(new Spec("bld_drill_nopower", Kind.Building, 3 * T, 3 * T + RoofOverhang, footW: 3, footH: 3));
             AddBuilding(list, "smelter", 2, 2);
             AddBuilding(list, "assembler", 3, 3);
             AddBuilding(list, "encoder", 2, 2);
@@ -89,6 +88,10 @@ namespace NewGen.EditorTools.Art
                     list.Add(new Spec($"{belt}_{dir}", Kind.Logistics, T, T, footW: 1, footH: 1));
             // Arm: one tile, one drawing. The player picks its input and output tiles in game.
             list.Add(new Spec("bld_arm_idle", Kind.Logistics, T, T + RoofOverhang, footW: 1, footH: 1));
+
+            // Shared by every building: laid over each tile of a damaged building, or replacing a destroyed one.
+            list.Add(new Spec("bld_damaged", Kind.Building, T, T));
+            list.Add(new Spec("bld_destroyed", Kind.Building, T, T));
 
             // HUD/world icons drawn over machines (owner will draw the real ones) and the bullet
             foreach (string n in new[] { "icon_nopower", "icon_missing_input", "icon_overheat" })

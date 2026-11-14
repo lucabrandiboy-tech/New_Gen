@@ -95,26 +95,29 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `cell_resource` | 32×32 | 1 | Tier-1 Data Cell. Should look like tech, not a rock. |
 | `unit_player_idle_down` / `_up` / `_side` | 64×64 | 1 | Player in cold suit. `side` faces right; the game mirrors it for left. |
 | `unit_player_walk_down_4f` / `_up_4f` / `_side_4f` | 256×64 | 4 | Walk cycle, 4 frames of 64×64. |
-| `bld_crashpod_<state>` | 192×224 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
-| `bld_drill_<state>` | 192×224 | 1 | **3×3**. Mining drill ("Miner MK1"). |
+| `bld_crashpod_idle` | 192×224 | 1 | 3×3. Crashed time pod with dying reactor. The player's start point. |
 | `bld_drill_idle` | 192×224 | 1 | Default look = frame 1 of the animation (powered, not running). |
 | `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224, 3 frames); `bld_drill_working_left_5f` (960×224, 5 frames) | — | 3 / 5 | Working animation, **one per output side** (the side the ore comes out). Frames 1, 2, 3 side by side (192×224 each), looped, **0.10 s per frame**. |
-| `bld_drill_nopower` | 192×224 | 1 | Drill with no power. (Any building can have a `_nopower` sprite; if missing the idle sprite is shown dimmed.) |
 | `icon_nopower`, `icon_missing_input`, `icon_overheat` | 24×24 | 1 | Small icons that **flash above a machine** when it has no power / is missing inputs / overheated. Transparent background. Must read at a glance. |
 | `fx_bullet` | 12×6 | 1 | The player's bullet, drawn pointing right. |
 | `tile_ocean_01` | 64×64 | 1 | Dark sea water past the coast (Claude will generate this later like the other terrain; placeholder for now). |
-| `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. `<state>` = idle, damaged, destroyed. |
+| `bld_smelter_idle` | 128×160 | 1 | 2×2. Furnace, should look hot. |
 | `bld_smelter_working_10f` | 1280×160 | 10 | Furnace smelting: 10 frames of 128×160 in one row. The game **stretches these across the recipe's craft time**, so the last frame always lands exactly as the item comes out. |
-| `bld_smelter_nopower` | 128×160 | 1 | Optional. If missing, the idle picture is shown dimmed. |
-| `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
-| `bld_encoder_<state>` | 128×160 | 1 | 2×2. Data Cell encoder. |
-| `bld_datacenter_l1_<state>` | 256×288 | 1 | 4×4. Level 1 Data Center. Important target — should look valuable. |
-| `bld_chest_<state>` | 64×96 | 1 | 1×1. Storage chest. |
+| `bld_assembler_idle` | 192×224 | 1 | 3×3. Assembler. |
+| `bld_encoder_idle` | 128×160 | 1 | 2×2. Data Cell encoder. |
+| `bld_datacenter_l1_idle` | 256×288 | 1 | 4×4. Level 1 Data Center. Important target — should look valuable. |
+| `bld_chest_idle` | 64×96 | 1 | 1×1. Storage chest. |
 | `bld_tube_right`, `bld_tube_left`, `bld_tube_up`, `bld_tube_down` | 64×64 | 1 (or animate with `_<N>f`) | Item conveyor, flat, seen from above. **One drawing per direction** — draw it carrying things the way the name says. Light still from the top-left. |
 | `bld_wire_right`, `_left`, `_up`, `_down` | 64×64 | 1 (or `_<N>f`) | Same four, for the data-cell wire. |
+| `bld_damaged` | 64×64 | 1 | **One picture for the whole game.** Cracks / scorch / sparks on a transparent background, laid **over** any damaged building, repeated across each of its tiles. |
+| `bld_destroyed` | 64×64 | 1 | **One picture for the whole game.** Rubble. It **replaces** a destroyed building, repeated across each of its tiles. |
 | `bld_arm_idle` | 64×96 | 1 | The arm. **One tile, one picture, no direction.** In game you click it and choose which neighbour it takes from and which it puts into; the item visibly flies between those tiles. Bottom 64×64 is its tile, the top 32 px is its height. |
 
-`<state>` = `idle`, `damaged`, `destroyed` → 3 files per building.
+**Each building needs only its `_idle` picture.** Damage and destruction use the two shared pictures
+above, so you never draw a damaged or destroyed version of anything. There is no "no power" picture
+either: an unpowered machine is drawn dimmed with `icon_nopower` flashing over it.
+(The game still prefers `bld_<id>_damaged`, `_destroyed` or `_nopower` if you ever choose to draw one
+for a particular building, but none are expected.)
 
 ---
 
@@ -131,23 +134,22 @@ You asked me to make the Antarctica terrain, so it lives in `Assets/Art/Generate
 ---
 
 ## 7. "Check" — still to draw before Milestone 1 is finished
-Say **"Check"** and Claude lists what's left (compares this list with what's in `Assets/Art/Sprites/`). Terrain is done by Claude.
+Say **"Check"** and Claude lists what's left (compares this list with what's in `Assets/Art/Sprites/`). Terrain is made by Claude.
 
 **Player** (64×64 per frame)
 - `unit_player_idle_down`, `unit_player_idle_up`, `unit_player_idle_side`
-- `unit_player_walk_down_4f`, `unit_player_walk_up_4f`, `unit_player_walk_side_4f`
+- `unit_player_walk_down_4f`, `unit_player_walk_up_4f`, `unit_player_walk_side_4f` (256×64)
 
-**Crash pod** (3×3 → 192×224): `bld_crashpod_idle`, `_damaged`, `_destroyed`
+**Buildings — one `_idle` picture each**
+- `bld_crashpod_idle` (192×224) · `bld_drill_idle` (192×224) · `bld_smelter_idle` (128×160)
+- `bld_assembler_idle` (192×224) · `bld_encoder_idle` (128×160) · `bld_datacenter_l1_idle` (256×288) · `bld_chest_idle` (64×96)
 
-**Drill / Miner MK1** (3×3 → 192×224)
-- `bld_drill_idle`, `bld_drill_nopower`, `bld_drill_damaged`, `bld_drill_destroyed`
-- `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224 each), `bld_drill_working_left_5f` (960×224)
+**Shared broken art** (64×64, one each for the whole game): `bld_damaged`, `bld_destroyed`
 
-**Smelter** (2×2 → 128×160): `bld_smelter_idle`, `_damaged`, `_destroyed`, `bld_smelter_working_10f` (1280×160), optional `bld_smelter_nopower`
-**Assembler** (3×3 → 192×224): `bld_assembler_idle`, `_damaged`, `_destroyed`
-**Data Cell encoder** (2×2 → 128×160): `bld_encoder_idle`, `_damaged`, `_destroyed`
-**Data Center L1** (4×4 → 256×288): `bld_datacenter_l1_idle`, `_damaged`, `_destroyed`
-**Chest** (1×1 → 64×96): `bld_chest_idle`, `_damaged`, `_destroyed`
+**Drill working animations** (one per output side the ore comes from)
+- `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224 each) · `bld_drill_working_left_5f` (960×224)
+
+**Furnace animation**: `bld_smelter_working_10f` (1280×160)
 
 **Conveyors** (64×64, flat, one per direction): `bld_tube_right`, `bld_tube_left`, `bld_tube_up`, `bld_tube_down`, and the same four as `bld_wire_*`
 **Arm** (64×96): `bld_arm_idle`
@@ -159,4 +161,3 @@ Say **"Check"** and Claude lists what's left (compares this list with what's in 
 
 **Icons** (24×24, flash above machines): `icon_nopower`, `icon_missing_input`, `icon_overheat`
 **Bullet** (12×6): `fx_bullet`
-
