@@ -200,7 +200,9 @@ namespace NewGen.Game.UI
                 int idx = quickPage * 10 + i;
                 string id = idx < quickItems.Count ? quickItems[idx] : null;
                 var def = id == null ? null : root.Db.Building(id);
-                quickIcons[i].sprite = def == null ? null : (def.IsConveyor ? SpriteRegistry.Get("bld_" + id + "_straight") : SpriteRegistry.Get(def.Kind == BuildingKind.Arm ? "bld_arm_side_idle" : "bld_" + id + "_idle"));
+                quickIcons[i].sprite = def == null ? null
+                    : def.IsConveyor ? (SpriteRegistry.TryGet("bld_" + id + "_right") ?? SpriteRegistry.Get("bld_" + id + "_straight"))
+                    : SpriteRegistry.Get(def.Kind == BuildingKind.Arm ? "bld_arm_idle" : "bld_" + id + "_idle");
                 quickIcons[i].enabled = def != null;
                 quickButtons[i].image.color = id != null && id == root.Build.Selected ? UiKit.Accent : UiKit.PanelLight;
             }

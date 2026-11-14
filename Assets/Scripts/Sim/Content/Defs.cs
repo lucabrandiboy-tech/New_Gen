@@ -82,6 +82,12 @@ namespace NewGen.Sim.Content
         // Arm
         public int ArmTicksPerSwing = 30;
 
+        /// <summary>How the working animation plays: "loop" = fixed rate, "progress" = stretched so it
+        /// finishes exactly when the current craft does.</summary>
+        public string AnimationMode = "loop";
+        /// <summary>Frames per second when AnimationMode is "loop".</summary>
+        public int AnimationFps = 10;
+
         // DataCenter
         public int ResearchPerTick;           // research points per tick when powered + cooled
         public int HeatPerTick;               // heat generated per tick (cooled by cold terrain)

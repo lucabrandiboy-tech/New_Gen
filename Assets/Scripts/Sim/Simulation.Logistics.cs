@@ -26,6 +26,16 @@ namespace NewGen.Sim
         partial void OnLogisticPlaced(Building b)
         {
             if (b is ConveyorBuilding c) { conveyors.Add(c); RefreshFeeds(c); }
+            if (b is ArmBuilding a && !a.Configured) a.ApplyDefaultSides();
+        }
+
+        /// <summary>Point an arm at two of its four neighbours. Returns false if the sides are the same.</summary>
+        public bool ConfigureArm(ArmBuilding arm, Dir input, Dir output)
+        {
+            if (arm == null || arm.Removed || input == output) return false;
+            arm.SetSides(input, output);
+            Events.Add(SimEvent.Entity(SimEventType.EntityStateChanged, arm.Id));
+            return true;
         }
 
         partial void OnLogisticRemoved(Building b)

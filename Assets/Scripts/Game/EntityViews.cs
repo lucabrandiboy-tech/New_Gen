@@ -36,7 +36,24 @@ namespace NewGen.Game
         Transform pivot;
         SpriteRenderer body, icon, hand;
         Light2D glow;
-        Sprite[] frames; float animTime; const float AnimFps = 10f;   // 0.10 s per frame
+        Sprite[] frames; float animTime;
+
+        /// <summary>
+        /// Which animation frame to show. "loop" runs at the building's own fps; "progress"
+        /// stretches the frames across the current craft so the last frame lands exactly when
+        /// the item is finished (what the owner asked for on the furnace).
+        /// </summary>
+        int FrameIndex(float dt)
+        {
+            if (B.Def.AnimationMode == "progress" && B is CrafterBuilding c)
+            {
+                int p = Mathf.Clamp(c.ProgressPermille(Root.Db), 0, 999);
+                return p * frames.Length / 1000;
+            }
+            animTime += dt;
+            float fps = B.Def.AnimationFps > 0 ? B.Def.AnimationFps : 10f;
+            return (int)(animTime * fps) % frames.Length;
+        }
         readonly List<SpriteRenderer> itemSprites = new List<SpriteRenderer>();
         int lastItemsVersion = -1, lastStateVersion = -1;
         Dir? lastFeed; Dir lastFacing;
@@ -76,45 +93,12 @@ namespace NewGen.Game
             lastStateVersion = B.StateVersion;
             string id = B.Def.Id;
             frames = null;
-            bool rotates = B.Def.IsConveyor || B.Def.Kind == Sim.Content.BuildingKind.Arm;
-            pivot.localRotation = rotates ? Quaternion.Euler(0f, 0f, WorldSpace.FacingAngle(B.Facing)) : Quaternion.identity;
+            pivot.localRotation = Quaternion.identity;
             body.transform.localScale = Vector3.one;
             body.transform.localPosition = new Vector3(-B.Width / 2f, -B.Height / 2f, 0f);
 
-            if (B is ConveyorBuilding conv)
-            {
-                bool corner = conv.FeedFrom.HasValue && conv.FeedFrom.Value != B.Facing.Opposite();
-                string key = "bld_" + id + (corner ? "_corner" : "_straight");
-                body.sprite = SpriteRegistry.Get(key);
-                // corner sprite enters from the left; mirror it when fed from the right
-                if (corner && conv.FeedFrom.Value == B.Facing.RotateCW())
-                {
-                    body.transform.localScale = new Vector3(-1f, 1f, 1f);
-                    body.transform.localPosition = new Vector3(B.Width / 2f, -B.Height / 2f, 0f);
-                }
-                lastFeed = conv.FeedFrom; lastFacing = B.Facing;
-                ApplyStateTint();
-                return;
-            }
-            if (B is ArmBuilding)
-            {
-                // Factorio-style: occupies 1 tile, picture reaches over the neighbours.
-                // Owner draws only "side" (facing right, 3x3 tiles, base bottom-middle) and "up" (1x2 tiles, base at bottom).
-                bool side = B.Facing == Dir.East || B.Facing == Dir.West;
-                string baseKey = side ? "bld_arm_side" : "bld_arm_up";
-                pivot.localRotation = Quaternion.identity;
-                frames = B.State == BuildingState.Working ? SpriteRegistry.TryGetFrames(baseKey + "_working") : null;
-                if (frames != null && frames.Length <= 1) frames = null;
-                body.sprite = frames != null ? frames[0] : SpriteRegistry.Get(baseKey + "_idle");
-                // sprites have a bottom-left pivot: shift so the base tile lands on this building's tile
-                float sx = B.Facing == Dir.West ? -1f : 1f, sy = B.Facing == Dir.South ? -1f : 1f;
-                body.transform.localScale = new Vector3(sx, sy, 1f);
-                float x = side ? (B.Facing == Dir.East ? -1f : 2f) : 0f;      // East: image spans x-1..x+2; West: mirrored around x+2
-                float y = B.Facing == Dir.South ? 0f : 0f;
-                if (B.Facing == Dir.South) y = 1f;                            // flipped vertically: image spans y-1..y+1 with pivot at y+1
-                body.transform.localPosition = new Vector3(x - 0.5f, y - 0.5f, 0f);
-                ApplyStateTint(); return;
-            }
+            if (B is ConveyorBuilding conv) { RefreshConveyor(conv, id); return; }
+            if (B is ArmBuilding) { body.sprite = SpriteRegistry.Get("bld_arm_idle"); ApplyStateTint(); return; }
 
             switch (B.State)
             {
@@ -135,15 +119,44 @@ namespace NewGen.Game
             ApplyStateTint();
         }
 
+        /// <summary>
+        /// Conveyors prefer one drawing per direction (bld_tube_right, _left, _up, _down) so the
+        /// top-left lighting stays correct. If a direction has no drawing we fall back to a single
+        /// bld_tube_straight / _corner that gets rotated.
+        /// </summary>
+        void RefreshConveyor(ConveyorBuilding conv, string id)
+        {
+            var perDir = SpriteRegistry.TryGetFrames("bld_" + id + "_" + B.Facing.Name());
+            if (perDir != null && perDir.Length > 0)
+            {
+                body.sprite = perDir[0];
+                frames = perDir.Length > 1 ? perDir : null;
+            }
+            else
+            {
+                bool corner = conv.FeedFrom.HasValue && conv.FeedFrom.Value != B.Facing.Opposite();
+                body.sprite = SpriteRegistry.Get("bld_" + id + (corner ? "_corner" : "_straight"));
+                pivot.localRotation = Quaternion.Euler(0f, 0f, WorldSpace.FacingAngle(B.Facing));
+                if (corner && conv.FeedFrom.Value == B.Facing.RotateCW())
+                {
+                    body.transform.localScale = new Vector3(-1f, 1f, 1f);
+                    body.transform.localPosition = new Vector3(B.Width / 2f, -B.Height / 2f, 0f);
+                }
+            }
+            lastFeed = conv.FeedFrom; lastFacing = B.Facing;
+            ApplyStateTint();
+        }
+
         void ApplyStateTint()
         {
             body.color = B.State == BuildingState.NoPower ? new Color(0.6f, 0.6f, 0.7f) : Color.white;
-            icon.enabled = B.State == BuildingState.NoPower || (B is CrafterBuilding c && c.MissingInput) || (B is DataCenterBuilding d && (d.MissingCells || d.Overheated));
-            if (icon.enabled)
-            {
-                string k = B.State == BuildingState.NoPower ? "icon_nopower" : (B is DataCenterBuilding dd && dd.Overheated ? "icon_overheat" : "icon_missing_input");
-                icon.sprite = SpriteRegistry.Get(k);
-            }
+            icon.enabled = B.State == BuildingState.NoPower
+                        || (B is CrafterBuilding c && c.MissingInput)
+                        || (B is DataCenterBuilding d && (d.MissingCells || d.Overheated));
+            if (!icon.enabled) return;
+            string k = B.State == BuildingState.NoPower ? "icon_nopower"
+                     : (B is DataCenterBuilding dd && dd.Overheated ? "icon_overheat" : "icon_missing_input");
+            icon.sprite = SpriteRegistry.Get(k);
         }
 
         static Sprite Find(string key) => SpriteRegistry.TryGet(key);
@@ -157,16 +170,8 @@ namespace NewGen.Game
                 UpdateConveyorItems(conv);
                 return;
             }
-            if (B is ArmBuilding arm)
-            {
-                if (frames != null) { animTime += dt; body.sprite = frames[(int)(animTime * AnimFps) % frames.Length]; }
-                UpdateArm(arm); return;
-            }
-            if (frames != null)
-            {
-                animTime += dt;
-                body.sprite = frames[(int)(animTime * AnimFps) % frames.Length];
-            }
+            if (B is ArmBuilding arm) { UpdateArm(arm); return; }
+            if (frames != null) body.sprite = frames[FrameIndex(dt)];
             // icon flashes
             if (icon.enabled) icon.color = new Color(1f, 1f, 1f, 0.55f + 0.45f * Mathf.Sin(Time.time * 6f));
             if (B is CrafterBuilding cb && icon.enabled != (cb.MissingInput || B.State == BuildingState.NoPower)) ApplyStateTint();
@@ -205,11 +210,10 @@ namespace NewGen.Game
             var def = Root.Db.Item(arm.Holding);
             hand.sprite = SpriteRegistry.Get(def != null ? def.SpriteKey : "item_" + arm.Holding);
             hand.transform.localScale = Vector3.one * 0.7f;
-            float full = arm.Def.ArmTicksPerSwing * 1000f;
-            float t = Mathf.Clamp01(arm.SwingProgress / full);        // 0 = over the back tile, 1 = over the front tile
-            var back = WorldSpace.TileCenter(arm.BackTile()) - transform.position;
-            var front = WorldSpace.TileCenter(arm.FrontTile()) - transform.position;
-            hand.transform.localPosition = Vector3.Lerp(back, front, t) + new Vector3(0f, 0.3f, 0f);
+            var from = WorldSpace.TileCenter(arm.InputTile) - transform.position;
+            var to = WorldSpace.TileCenter(arm.OutputTile) - transform.position;
+            float t = Mathf.Clamp01(arm.FlightPermille / 1000f);
+            hand.transform.localPosition = Vector3.Lerp(from, to, t) + new Vector3(0f, 0.25f, 0f);
         }
     }
 

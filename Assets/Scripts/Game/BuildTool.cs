@@ -27,6 +27,16 @@ namespace NewGen.Game
         Transform ghost; SpriteRenderer ghostSprite;
         TilePos lastDragTile; bool dragging;
 
+        // --- arm wiring mode: click the arm, then click its input tile and its output tile
+        ArmBuilding configuringArm;
+        Dir? pendingInput;
+        SpriteRenderer[] armTiles;
+        static readonly Dir[] Sides = { Dir.North, Dir.East, Dir.South, Dir.West };
+        static readonly Color SideFree = new Color(0.30f, 1f, 0.45f, 0.35f);
+        static readonly Color SideInput = new Color(0.35f, 0.65f, 1f, 0.55f);
+        static readonly Color SideCurrent = new Color(0.30f, 1f, 0.45f, 0.18f);
+        public bool ConfiguringArm => configuringArm != null;
+
         public static BuildTool Create(GameRoot root)
         {
             var go = new GameObject("BuildTool");
@@ -37,7 +47,79 @@ namespace NewGen.Game
             t.ghostSprite = t.ghost.gameObject.AddComponent<SpriteRenderer>();
             t.ghostSprite.sortingOrder = 3000;
             t.ghost.gameObject.SetActive(false);
+            t.armTiles = new SpriteRenderer[4];
+            for (int i = 0; i < 4; i++)
+            {
+                var q = new GameObject("armSide" + i);
+                q.transform.SetParent(go.transform, false);
+                var sr = q.AddComponent<SpriteRenderer>();
+                sr.sprite = WhiteSprite();
+                sr.sortingOrder = 2900;
+                q.SetActive(false);
+                t.armTiles[i] = sr;
+            }
             return t;
+        }
+
+        static Sprite white;
+        /// <summary>A plain white 1x1 sprite, used to tint whole tiles for the arm overlay.</summary>
+        static Sprite WhiteSprite()
+        {
+            if (white != null) return white;
+            var tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            tex.SetPixels32(new[] { new Color32(255, 255, 255, 255) });
+            tex.Apply();
+            white = Sprite.Create(tex, new Rect(0, 0, 1, 1), Vector2.zero, 1f);
+            return white;
+        }
+
+        // ------------------------------------------------------------------ arm wiring
+        public void BeginArmConfig(ArmBuilding arm)
+        {
+            configuringArm = arm; pendingInput = null;
+            Select(null);
+            for (int i = 0; i < 4; i++)
+            {
+                var tile = arm.Origin.Offset(Sides[i]);
+                armTiles[i].gameObject.SetActive(true);
+                armTiles[i].transform.position = WorldSpace.TileCorner(tile);
+                bool current = arm.InputSide == Sides[i] || arm.OutputSide == Sides[i];
+                armTiles[i].color = current ? SideCurrent : SideFree;
+            }
+            root.Hud.Toast("Click the tile to take FROM, then the tile to put INTO.  Q cancels.");
+        }
+
+        public void CancelArmConfig()
+        {
+            configuringArm = null; pendingInput = null;
+            if (armTiles != null) foreach (var q in armTiles) q.gameObject.SetActive(false);
+        }
+
+        /// <returns>true while the arm overlay is handling input.</returns>
+        bool UpdateArmConfig(bool uiBlocked)
+        {
+            if (configuringArm == null) return false;
+            if (configuringArm.Removed) { CancelArmConfig(); return false; }
+            var inp = root.Input;
+            if (inp.Cancel.WasPressedThisFrame() || inp.Pause.WasPressedThisFrame()) { CancelArmConfig(); return true; }
+            if (uiBlocked || !inp.Build.WasPressedThisFrame()) return true;
+
+            int clicked = -1;
+            for (int i = 0; i < 4; i++) if (configuringArm.Origin.Offset(Sides[i]) == HoverTile) clicked = i;
+            if (clicked < 0) { CancelArmConfig(); return true; }
+
+            if (pendingInput == null)
+            {
+                pendingInput = Sides[clicked];
+                for (int i = 0; i < 4; i++) armTiles[i].color = i == clicked ? SideInput : SideFree;
+                root.Hud.Toast("Input: " + Sides[clicked].Name() + ".  Now click where it should go.");
+                return true;
+            }
+            if (Sides[clicked] == pendingInput.Value) { root.Hud.Toast("Pick a different tile for the output."); return true; }
+            root.Sim.ConfigureArm(configuringArm, pendingInput.Value, Sides[clicked]);
+            root.Hud.Toast("Arm: " + pendingInput.Value.Name() + " -> " + Sides[clicked].Name());
+            CancelArmConfig();
+            return true;
         }
 
         public void Select(string buildingId)
@@ -53,8 +135,8 @@ namespace NewGen.Game
 
         Sprite GhostSprite(BuildingDef def)
         {
-            if (def.IsConveyor) return SpriteRegistry.Get("bld_" + def.Id + "_straight");
-            if (def.Kind == BuildingKind.Arm) return SpriteRegistry.Get(Facing == Dir.East || Facing == Dir.West ? "bld_arm_side_idle" : "bld_arm_up_idle");
+            if (def.IsConveyor) return SpriteRegistry.TryGet("bld_" + def.Id + "_" + Facing.Name()) ?? SpriteRegistry.Get("bld_" + def.Id + "_straight");
+            if (def.Kind == BuildingKind.Arm) return SpriteRegistry.Get("bld_arm_idle");
             return SpriteRegistry.Get("bld_" + def.Id + "_idle");
         }
 
@@ -81,6 +163,7 @@ namespace NewGen.Game
             HoverBuilding = sim.BuildingAt(HoverTile);
             bool ui = root.Hud.PointerOverUi || root.Console.IsOpen;
             MineHeld = false;
+            if (UpdateArmConfig(ui)) return;
 
             if (!root.Console.IsOpen)
             {
@@ -122,7 +205,11 @@ namespace NewGen.Game
             else
             {
                 ghost.gameObject.SetActive(false);
-                if (!ui && inp.Build.WasPressedThisFrame() && HoverBuilding != null) root.Hud.Inspect(HoverBuilding);
+                if (!ui && inp.Build.WasPressedThisFrame() && HoverBuilding != null)
+                {
+                    if (HoverBuilding is ArmBuilding arm && root.Sim.LocalPlayer != null && root.Sim.InReach(root.Sim.LocalPlayer, HoverTile)) BeginArmConfig(arm);
+                    else root.Hud.Inspect(HoverBuilding);
+                }
             }
 
             if (!ui)
@@ -139,19 +226,13 @@ namespace NewGen.Game
         void UpdateGhost(BuildingDef def, TilePos origin, int w, int h, bool ok)
         {
             ghost.gameObject.SetActive(true);
-            bool rotates = def.IsConveyor;
-            bool arm = def.Kind == BuildingKind.Arm;
+            // Per-direction conveyor drawings are already facing the right way; a single
+            // bld_..._straight fallback has to be rotated around the tile centre instead.
+            bool rotates = def.IsConveyor && SpriteRegistry.TryGet("bld_" + def.Id + "_" + Facing.Name()) == null;
             ghost.position = WorldSpace.TileCorner(origin) + (rotates ? new Vector3(0.5f, 0.5f, 0f) : Vector3.zero);
             ghost.rotation = rotates ? Quaternion.Euler(0f, 0f, WorldSpace.FacingAngle(Facing)) : Quaternion.identity;
-            // sprites have a bottom-left pivot; for rotating 1x1 pieces offset so they spin around the tile centre
             ghostSprite.transform.localPosition = rotates ? new Vector3(-0.5f, -0.5f, 0f) : Vector3.zero;
             ghostSprite.transform.localScale = Vector3.one;
-            if (arm)
-            {
-                bool side = Facing == Dir.East || Facing == Dir.West;
-                ghostSprite.transform.localScale = new Vector3(Facing == Dir.West ? -1f : 1f, Facing == Dir.South ? -1f : 1f, 1f);
-                ghostSprite.transform.localPosition = new Vector3(side ? (Facing == Dir.East ? -1f : 2f) : 0f, Facing == Dir.South ? 1f : 0f, 0f);
-            }
             ghostSprite.color = ok ? new Color(0.4f, 1f, 0.5f, 0.55f) : new Color(1f, 0.3f, 0.3f, 0.55f);
         }
 

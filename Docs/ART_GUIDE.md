@@ -47,7 +47,8 @@ All lowercase, underscores, no spaces, **PNG only**.
 
 - Building states: `idle`, `damaged`, `destroyed`. (**Working** glow is done with a 2D light — no extra drawing.)
 - **Animations:** end the name with `_<N>f` where N = number of frames, e.g. `_4f`. The image must be exactly N frames wide in one row. The game slices it automatically.
-- **Tubes/wires orientation:** draw `bld_tube_straight` / `bld_wire_straight` **flowing from the bottom to the top** of the tile. Draw `bld_tube_corner` / `bld_wire_corner` **entering from the left edge and leaving through the top**. The game rotates/mirrors them for every other case. Arms are special: see their rows in §5 (one picture facing right, one facing up; the game mirrors/flips the rest).
+- **Conveyors**: draw **one picture per direction** — `bld_tube_right`, `_left`, `_up`, `_down` — so the top-left lighting stays correct in every direction. (If a direction is missing the game falls back to a single `bld_tube_straight` drawn flowing bottom→top and rotates it, which will light it wrongly.) Same four names for `bld_wire_*`.
+- **The arm** needs only **one** picture, `bld_arm_idle`. It is one tile; in game you click it and pick which neighbouring tile it takes from and which it puts into, so it never needs a facing.
 - If your file has the same name as a placeholder, **yours replaces it automatically**. You can put files in subfolders inside `Sprites/` if you like — only the file name matters.
 
 ### What the import pipeline does to your files
@@ -102,17 +103,16 @@ These sizes are approved and match the placeholders. Light always from the top-l
 | `icon_nopower`, `icon_missing_input`, `icon_overheat` | 24×24 | 1 | Small icons that **flash above a machine** when it has no power / is missing inputs / overheated. Transparent background. Must read at a glance. |
 | `fx_bullet` | 12×6 | 1 | The player's bullet, drawn pointing right. |
 | `tile_ocean_01` | 64×64 | 1 | Dark sea water past the coast (Claude will generate this later like the other terrain; placeholder for now). |
-| `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. |
+| `bld_smelter_<state>` | 128×160 | 1 | 2×2. Furnace, should look hot. `<state>` = idle, damaged, destroyed. |
+| `bld_smelter_working_10f` | 1280×160 | 10 | Furnace smelting: 10 frames of 128×160 in one row. The game **stretches these across the recipe's craft time**, so the last frame always lands exactly as the item comes out. |
+| `bld_smelter_nopower` | 128×160 | 1 | Optional. If missing, the idle picture is shown dimmed. |
 | `bld_assembler_<state>` | 192×224 | 1 | 3×3. Assembler. |
 | `bld_encoder_<state>` | 128×160 | 1 | 2×2. Data Cell encoder. |
 | `bld_datacenter_l1_<state>` | 256×288 | 1 | 4×4. Level 1 Data Center. Important target — should look valuable. |
 | `bld_chest_<state>` | 64×96 | 1 | 1×1. Storage chest. |
-| `bld_tube_straight`, `bld_tube_corner` | 64×64 | 1 | Flat, seen from above. Straight flows bottom→top; corner enters from the left, leaves at the top. Game rotates them. |
-| `bld_wire_straight`, `bld_wire_corner` | 64×64 | 1 | Same as tubes, for data-wires. |
-| `bld_arm_side_idle` | 192×224 | 1 | Arm **facing right**, still. Occupies only the **bottom-middle tile**; the picture reaches over the tile to its left (grabs there) and right (drops there). Game mirrors it for left. |
-| `bld_arm_side_working_<N>f` | N×192 wide × 224 | N | Same arm moving an item from left to right. You choose N. |
-| `bld_arm_up_idle` | 64×160 | 1 | Arm **facing up**, still. Occupies the **bottom tile**; the top tile is where it drops. Game flips it for down. |
-| `bld_arm_up_working_<N>f` | N×64 wide × 160 | N | Same arm moving an item upward. |
+| `bld_tube_right`, `bld_tube_left`, `bld_tube_up`, `bld_tube_down` | 64×64 | 1 (or animate with `_<N>f`) | Item conveyor, flat, seen from above. **One drawing per direction** — draw it carrying things the way the name says. Light still from the top-left. |
+| `bld_wire_right`, `_left`, `_up`, `_down` | 64×64 | 1 (or `_<N>f`) | Same four, for the data-cell wire. |
+| `bld_arm_idle` | 64×96 | 1 | The arm. **One tile, one picture, no direction.** In game you click it and choose which neighbour it takes from and which it puts into; the item visibly flies between those tiles. Bottom 64×64 is its tile, the top 32 px is its height. |
 
 `<state>` = `idle`, `damaged`, `destroyed` → 3 files per building.
 
@@ -143,14 +143,14 @@ Say **"Check"** and Claude lists what's left (compares this list with what's in 
 - `bld_drill_idle`, `bld_drill_nopower`, `bld_drill_damaged`, `bld_drill_destroyed`
 - `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224 each), `bld_drill_working_left_5f` (960×224)
 
-**Smelter** (2×2 → 128×160): `bld_smelter_idle`, `_damaged`, `_destroyed`
+**Smelter** (2×2 → 128×160): `bld_smelter_idle`, `_damaged`, `_destroyed`, `bld_smelter_working_10f` (1280×160), optional `bld_smelter_nopower`
 **Assembler** (3×3 → 192×224): `bld_assembler_idle`, `_damaged`, `_destroyed`
 **Data Cell encoder** (2×2 → 128×160): `bld_encoder_idle`, `_damaged`, `_destroyed`
 **Data Center L1** (4×4 → 256×288): `bld_datacenter_l1_idle`, `_damaged`, `_destroyed`
 **Chest** (1×1 → 64×96): `bld_chest_idle`, `_damaged`, `_destroyed`
 
-**Logistics** (64×64, flat): `bld_tube_straight`, `bld_tube_corner`, `bld_wire_straight`, `bld_wire_corner`
-**Arm**: `bld_arm_side_idle` (192×224), `bld_arm_side_working_<N>f`, `bld_arm_up_idle` (64×160), `bld_arm_up_working_<N>f`
+**Conveyors** (64×64, flat, one per direction): `bld_tube_right`, `bld_tube_left`, `bld_tube_up`, `bld_tube_down`, and the same four as `bld_wire_*`
+**Arm** (64×96): `bld_arm_idle`
 
 **Resource patches** (64×64, transparent around the ore): `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01`
 

@@ -5,9 +5,11 @@
     { "id": "crashpod", "name": "Crashed time pod", "width": 3, "height": 3, "kind": "Generator", "rotatable": false, "maxHealth": 2000,
       "powerOutput": 200000, "decayTicks": 216000, "decayFloorPermille": 100, "warmthRadiusTiles": 4, "warmthPerTick": 6 },
     { "id": "drill", "name": "Miner MK1", "width": 3, "height": 3, "kind": "Drill", "maxHealth": 300,
-      "powerUse": 30000, "mineTicksPerItem": 60, "outputSlots": 1 },
+      "powerUse": 30000, "mineTicksPerItem": 60, "outputSlots": 1,
+      "animationMode": "loop", "animationFps": 10 },
     { "id": "smelter", "name": "Smelter", "width": 2, "height": 2, "kind": "Crafter", "crafterType": "smelter", "maxHealth": 250,
-      "powerUse": 40000, "inputSlots": 1, "outputSlots": 1, "warmthRadiusTiles": 3, "warmthPerTick": 3 },
+      "powerUse": 40000, "inputSlots": 1, "outputSlots": 1, "warmthRadiusTiles": 3, "warmthPerTick": 3,
+      "animationMode": "progress" },   // 10 frames stretched across the craft, so it ends as the item appears
     { "id": "assembler", "name": "Assembler", "width": 3, "height": 3, "kind": "Crafter", "crafterType": "assembler", "maxHealth": 300,
       "powerUse": 50000, "inputSlots": 4, "outputSlots": 2 },
     { "id": "encoder", "name": "Data cell encoder", "width": 2, "height": 2, "kind": "Crafter", "crafterType": "encoder", "maxHealth": 200,
@@ -17,6 +19,7 @@
     { "id": "chest", "name": "Chest", "width": 1, "height": 1, "kind": "Chest", "rotatable": false, "maxHealth": 100, "slots": 16 },
     { "id": "tube", "name": "Tube", "width": 1, "height": 1, "kind": "Tube", "maxHealth": 50, "powerUse": 500, "subPerTick": 32, "itemsPerTile": 4 },
     { "id": "wire", "name": "Data wire (iron)", "width": 1, "height": 1, "kind": "Wire", "maxHealth": 50, "subPerTick": 32, "itemsPerTile": 4 },
-    { "id": "arm", "name": "Arm", "width": 1, "height": 1, "kind": "Arm", "maxHealth": 80, "powerUse": 5000, "armTicksPerSwing": 24 }
+    // Occupies one tile; moves items between any two of its four neighbours (player picks input/output).
+    { "id": "arm", "name": "Arm", "width": 1, "height": 1, "kind": "Arm", "maxHealth": 80, "powerUse": 5000, "armTicksPerSwing": 10 }
   ]
 }

@@ -82,6 +82,7 @@ namespace NewGen.Sim.Content
                     PowerUse = o.Int("powerUse"), PowerOutput = o.Int("powerOutput"), DecayTicks = o.Int("decayTicks"), DecayFloorPermille = o.Int("decayFloorPermille", 1000),
                     MineTicksPerItem = o.Int("mineTicksPerItem"), CrafterType = o.Str("crafterType"), InputSlots = o.Int("inputSlots", 2), OutputSlots = o.Int("outputSlots", 1),
                     Slots = o.Int("slots"), SubPerTick = o.Int("subPerTick"), ItemsPerTile = o.Int("itemsPerTile", 4), ArmTicksPerSwing = o.Int("armTicksPerSwing", 30),
+                    AnimationMode = o.Str("animationMode", "loop"), AnimationFps = o.Int("animationFps", 10),
                     ResearchPerTick = o.Int("researchPerTick"), HeatPerTick = o.Int("heatPerTick"), MaxHeat = o.Int("maxHeat", 1000),
                     WarmthRadiusTiles = o.Int("warmthRadiusTiles"), WarmthPerTick = o.Int("warmthPerTick"),
                 };

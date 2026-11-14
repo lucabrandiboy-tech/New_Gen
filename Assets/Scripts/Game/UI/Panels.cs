@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NewGen.Art;
 using NewGen.Sim;
 using NewGen.Sim.Content;
+using NewGen.Sim.Core;
 using NewGen.Sim.Entities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -232,7 +233,12 @@ namespace NewGen.Game.UI
                 default:
                     if (!full) return; UiKit.Clear(body);
                     if (b is ConveyorBuilding cv) UiKit.Text_(body, $"{cv.Items.Count} items on this tile", 16);
-                    if (b is ArmBuilding arm) UiKit.Text_(body, "Holding: " + (arm.Holding ?? "nothing") + ". Takes from behind, drops in front.", 16);
+                    if (b is ArmBuilding arm)
+                    {
+                        string wiring = arm.Configured ? $"takes from {arm.InputSide.Value.Name()}, puts into {arm.OutputSide.Value.Name()}" : "not wired up yet";
+                        UiKit.Text_(body, $"Holding: {arm.Holding ?? "nothing"}.  Currently {wiring}.", 16);
+                        UiKit.Text_(body, "Click the arm in the world to re-pick its input and output tiles.", 16, TextAnchor.UpperLeft, UiKit.Dim);
+                    }
                     break;
             }
             lastRefresh = Time.unscaledTime;

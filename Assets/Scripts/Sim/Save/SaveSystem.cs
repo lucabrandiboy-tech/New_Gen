@@ -16,7 +16,7 @@ namespace NewGen.Sim.Save
     public static class SaveSystem
     {
         const uint Magic = 0x5653474E; // "NGSV"
-        public const int Version = 1;
+        public const int Version = 2;   // 2: arms store input/output sides instead of a swing direction
 
         // ------------------------------------------------------------------ rules
         public static bool CanManualSave(Simulation sim, out int secondsLeft)
@@ -104,7 +104,11 @@ namespace NewGen.Sim.Save
                 case ConveyorBuilding cv:
                     w.Write(cv.Items.Count); foreach (var it in cv.Items) { w.Write(it.Item); w.Write(it.Pos); }
                     w.Write(cv.FeedFrom.HasValue); w.Write((byte)(cv.FeedFrom ?? Dir.North)); break;
-                case ArmBuilding a: w.Write(a.Holding ?? ""); w.Write(a.SwingProgress); w.Write(a.SwingingForward); break;
+                case ArmBuilding a:
+                    w.Write(a.Holding ?? ""); w.Write(a.SwingProgress);
+                    w.Write(a.InputSide.HasValue); w.Write((byte)(a.InputSide ?? Dir.North));
+                    w.Write(a.OutputSide.HasValue); w.Write((byte)(a.OutputSide ?? Dir.South));
+                    break;
             }
         }
 
@@ -197,7 +201,15 @@ namespace NewGen.Sim.Save
                         for (int i = 0; i < n; i++) cv.Items.Add(new ConveyorItem { Item = r.ReadString(), Pos = r.ReadInt32() });
                         bool has = r.ReadBoolean(); var d = (Dir)r.ReadByte(); cv.FeedFrom = has ? d : (Dir?)null; break;
                     }
-                case ArmBuilding a: a.Holding = NullIfEmpty(r.ReadString()); a.SwingProgress = r.ReadInt32(); a.SwingingForward = r.ReadBoolean(); break;
+                case ArmBuilding a:
+                    {
+                        a.Holding = NullIfEmpty(r.ReadString()); a.SwingProgress = r.ReadInt32();
+                        bool hasIn = r.ReadBoolean(); var din = (Dir)r.ReadByte();
+                        bool hasOut = r.ReadBoolean(); var dout = (Dir)r.ReadByte();
+                        a.InputSide = hasIn ? din : (Dir?)null;
+                        a.OutputSide = hasOut ? dout : (Dir?)null;
+                        break;
+                    }
                 case null:
                     {
                         // unknown building kind: skip by re-reading using a dummy based on the def kind is impossible; abort cleanly

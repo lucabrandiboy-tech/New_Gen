@@ -74,6 +74,42 @@ namespace NewGen.SimTest
             Check.Eq(0, chestA.Storage.Count("iron_ore"), "arm emptied chest A");
             Check.Eq(5, chestB.Storage.Count("iron_ore"), "all 5 ore arrived in chest B");
             Check.True(arm.Holding == null && tube.Items.Count == 0, "nothing left in transit");
+
+            Check.Section("Arm input/output sides");
+            var s5 = EntityTests.NewSim();
+            s5.Place("crashpod", new TilePos(-1, -1), Dir.North);
+            // power reaches the arm from its west side; north/south are left free for the test chests
+            for (int x = 2; x <= 3; x++) s5.Place("wire", new TilePos(x, 0), Dir.East);
+            var mid = s5.Place("arm", new TilePos(4, 0), Dir.East) as ArmBuilding;
+            s5.Step();
+            Check.Eq(1000, mid.PowerSatisfaction, "arm powered from the wire to its west");
+            Check.True(mid.Configured, "freshly placed arm defaults to behind -> front");
+            Check.Eq(Dir.West, mid.InputSide.Value, "default input is behind");
+            Check.Eq(Dir.East, mid.OutputSide.Value, "default output is in front");
+            Check.Eq(new TilePos(3, 0), mid.InputTile, "input tile");
+            Check.Eq(new TilePos(5, 0), mid.OutputTile, "output tile");
+
+            // Re-point it to carry from the chest below to the chest above (a corner turn).
+            var below = s5.Place("chest", new TilePos(4, -1), Dir.North) as ChestBuilding;
+            var above = s5.Place("chest", new TilePos(4, 1), Dir.North) as ChestBuilding;
+            Check.True(below != null && above != null, "chests placed north and south of the arm");
+            Check.True(!s5.ConfigureArm(mid, Dir.North, Dir.North), "input and output cannot be the same side");
+            Check.True(s5.ConfigureArm(mid, Dir.South, Dir.North), "re-pointed south -> north");
+            below.Storage.Add("coal", 3);
+            Steps(s5, 300);
+            Check.Eq(0, below.Storage.Count("coal"), "took from the south neighbour");
+            Check.Eq(3, above.Storage.Count("coal"), "delivered to the north neighbour");
+
+            // Output that cannot accept the item: the arm leaves it alone rather than destroying it.
+            s5.ConfigureArm(mid, Dir.North, Dir.West);   // west is a data-wire, which refuses coal
+            Steps(s5, 200);
+            Check.Eq(3, above.Storage.Count("coal"), "blocked output: nothing taken");
+            Check.True(mid.Holding == null, "arm is not holding anything it cannot deliver");
+
+            // Unconfigured arm (e.g. an old save) simply does nothing.
+            mid.InputSide = null; mid.OutputSide = null;
+            Steps(s5, 60);
+            Check.Eq(3, above.Storage.Count("coal"), "unconfigured arm is inert");
         }
     }
 }

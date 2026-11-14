@@ -4,40 +4,66 @@ using NewGen.Sim.Core;
 
 namespace NewGen.Sim.Entities
 {
-    /// <summary>Picks one item from the tile behind it and drops it on the tile in front. Needs power.</summary>
+    /// <summary>
+    /// "Telekinesis device": occupies one tile and moves items between two of its four
+    /// neighbouring tiles (no diagonals). The player picks which neighbour is the input and
+    /// which is the output; the item visibly flies from one to the other. Needs power.
+    /// </summary>
     public sealed class ArmBuilding : Building
     {
-        public string Holding;          // item in hand, null if empty
-        public int SwingProgress;       // 0..ArmTicksPerSwing
-        public bool SwingingForward;    // true = carrying to the front
+        /// <summary>Side the item is taken from. Null until configured.</summary>
+        public Dir? InputSide;
+        /// <summary>Side the item is delivered to. Null until configured.</summary>
+        public Dir? OutputSide;
+
+        public string Holding;          // item in flight, null if empty
+        public int SwingProgress;       // 0 .. ArmTicksPerSwing*1000; 0 = at the input, full = at the output
+        public int ConfigVersion;       // bumps when the sides change (view refresh)
+
+        public bool Configured => InputSide.HasValue && OutputSide.HasValue && InputSide.Value != OutputSide.Value;
+        public TilePos InputTile => Origin.Offset(InputSide ?? Facing.Opposite());
+        public TilePos OutputTile => Origin.Offset(OutputSide ?? Facing);
+
+        /// <summary>Default wiring when first placed: pull from behind, push in front (so R still works while building fast).</summary>
+        public void ApplyDefaultSides()
+        {
+            InputSide = Facing.Opposite();
+            OutputSide = Facing;
+            ConfigVersion++;
+        }
+
+        public void SetSides(Dir input, Dir output)
+        {
+            if (input == output) return;
+            InputSide = input; OutputSide = output;
+            SwingProgress = 0;
+            ConfigVersion++;
+        }
 
         public override void Tick(Simulation sim)
         {
-            if (PowerSatisfaction <= 0) return;
-            int step = Fix.Max(1, Fix.Permille(1000, PowerSatisfaction));   // permille of a tick's progress
-            // progress in permille-ticks: ArmTicksPerSwing ticks at full power
+            if (!Configured || PowerSatisfaction <= 0) return;
+            int step = PowerSatisfaction;                       // 1000 per tick at full power
+            int full = Def.ArmTicksPerSwing * 1000;
+
             if (Holding == null)
             {
-                if (SwingProgress > 0) { SwingProgress = Fix.Max(0, SwingProgress - step); WorkedThisTick = true; return; } // returning
-                var src = sim.BuildingAt(BackTile());
-                if (src == null || src.IsDestroyed) return;
-                var dst = sim.BuildingAt(FrontTile());
-                if (dst == null || dst.IsDestroyed) return;
+                // return to the input side before grabbing again
+                if (SwingProgress > 0) { SwingProgress = Fix.Max(0, SwingProgress - step); WorkedThisTick = true; return; }
+                var src = sim.BuildingAt(InputTile);
+                var dst = sim.BuildingAt(OutputTile);
+                if (src == null || src.IsDestroyed || dst == null || dst.IsDestroyed) return;
                 string item = TakeFrom(src, dst, sim.Db);
                 if (item == null) return;
-                Holding = item; SwingingForward = true; SwingProgress = 0; WorkedThisTick = true;
+                Holding = item; WorkedThisTick = true;
             }
             else
             {
-                int full = Def.ArmTicksPerSwing * 1000;
                 if (SwingProgress < full) { SwingProgress = Fix.Min(full, SwingProgress + step); WorkedThisTick = true; }
                 if (SwingProgress < full) return;
-                var dst = sim.BuildingAt(FrontTile());
+                var dst = sim.BuildingAt(OutputTile);
                 if (dst == null || dst.IsDestroyed) return;
-                if (GiveTo(dst, Holding))
-                {
-                    Holding = null; SwingingForward = false; SwingProgress = full; WorkedThisTick = true;
-                }
+                if (GiveTo(dst, Holding)) { Holding = null; WorkedThisTick = true; }
             }
         }
 
@@ -67,6 +93,9 @@ namespace NewGen.Sim.Entities
             if (inv == null || !dst.Accepts(item)) return false;
             return inv.Add(item, 1) == 0;
         }
+
+        /// <summary>0..1000 of the way from the input tile to the output tile.</summary>
+        public int FlightPermille => Def.ArmTicksPerSwing == 0 ? 0 : SwingProgress / Def.ArmTicksPerSwing;
 
         public override void CollectContents(List<ItemStack> into)
         {
