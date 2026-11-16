@@ -12,5 +12,10 @@ namespace NewGen.Sim.Systems
         public long Demand;        // watts requested this tick
         public int Satisfaction;   // 0..1000
         public int GeneratorCount, ConsumerCount;
+        /// <summary>Batteries on this network, and how much they had to cover this tick.</summary>
+        public readonly List<BatteryBuilding> Batteries = new List<BatteryBuilding>();
+        public long FromBatteries;
+        public long Stored, StorageCapacity;
+        public int StoredPermille => StorageCapacity == 0 ? 0 : (int)(Stored * 1000 / StorageCapacity);
     }
 }

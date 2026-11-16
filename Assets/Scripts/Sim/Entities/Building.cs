@@ -89,8 +89,22 @@ namespace NewGen.Sim.Entities
         /// <summary>Inventories an arm may take from / put into. Default: none.</summary>
         public virtual Inventory OutputInventory => null;
         public virtual Inventory InputInventory => null;
-        /// <summary>Can this building accept the item right now (for arms / tubes)?</summary>
+        /// <summary>Can this building accept the item right now (for arms / belts / routers)?</summary>
         public virtual bool Accepts(string item) => InputInventory != null && InputInventory.CanAdd(item, 1);
+
+        /// <summary>
+        /// Actually hand an item in. <paramref name="from"/> is the side it arrives from, as seen
+        /// from this building. Returns false if it would not fit after all.
+        /// </summary>
+        public virtual bool TryTakeIn(string item, Dir from)
+        {
+            if (!Accepts(item)) return false;
+            var inv = InputInventory;
+            return inv != null && inv.Add(item, 1) == 0;
+        }
+
+        /// <summary>Watts this building is supplying right now. 0 for everything that is not a generator.</summary>
+        public virtual int PowerOutputNow() => 0;
 
         /// <summary>Per-tick behaviour. Subclasses override. Called only for loaded, non-destroyed buildings.</summary>
         public virtual void Tick(Simulation sim) { }

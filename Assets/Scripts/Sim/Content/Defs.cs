@@ -6,8 +6,11 @@ namespace NewGen.Sim.Content
     /// <summary>What a building fundamentally does. Each kind maps to one simulation component.</summary>
     public enum BuildingKind
     {
-        Static,      // decoration / no behaviour
-        Generator,   // produces power (pod reactor)
+        Static,         // decoration / no behaviour
+        Generator,      // produces power on its own (pod reactor, wind turbine)
+        FuelGenerator,  // burns an item for power (coal burner)
+        Battery,        // stores surplus power and gives it back during a shortfall
+        Router,         // splits and merges items between belts
         Drill,       // mines the resource under its footprint
         Crafter,     // runs recipes (smelter, assembler, encoder)
         DataCenter,  // consumes data cells for research
@@ -24,7 +27,10 @@ namespace NewGen.Sim.Content
         public string Name;
         public int StackSize = 100;
         public string Category = "material";   // material, cell, tool, ...
+        /// <summary>Ticks of burn this item gives a fuel generator. 0 = not a fuel.</summary>
+        public int FuelTicks;
         public bool IsDataCell => Category == "cell";
+        public bool IsFuel => FuelTicks > 0;
         public string SpriteKey => IsDataCell ? "cell_" + Id.Replace("cell_", "") : "item_" + Id;
     }
 
@@ -74,6 +80,18 @@ namespace NewGen.Sim.Content
 
         // Chest
         public int Slots;
+
+        // Fuel generator
+        public int FuelSlots = 1;
+
+        // Battery: capacity in watt-ticks (a watt sustained for one tick). At 30 ticks/s,
+        // 30 watt-ticks = 1 joule. MaxThroughput caps how fast it can charge or discharge.
+        public long EnergyCapacity;
+        public int MaxThroughput;
+
+        // Router
+        public int RouterSlots = 4;
+        public int RouterTicksPerItem = 6;
 
         // Conveyors (tube / wire)
         public int SubPerTick;                // item travel speed in sub-units per tick (256 = one tile per tick)

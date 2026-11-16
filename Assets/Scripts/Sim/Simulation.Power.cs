@@ -66,14 +66,46 @@ namespace NewGen.Sim
             foreach (var net in Networks.Values)
             {
                 long supply = 0, demand = 0; int gens = 0, cons = 0;
+                net.Batteries.Clear();
                 foreach (var b in net.Members)
                 {
                     if (b.IsDestroyed) continue;
-                    if (b is GeneratorBuilding g) { supply += g.CurrentOutput(); gens++; }
+                    int out_ = b.PowerOutputNow();
+                    if (out_ > 0) { supply += out_; gens++; }
+                    else if (b is GeneratorBuilding || b is FuelGeneratorBuilding) gens++;
                     if (b.Def.PowerUse > 0) { demand += b.Def.PowerUse; cons++; }
+                    if (b is BatteryBuilding bat) net.Batteries.Add(bat);
                 }
                 net.Supply = supply; net.Demand = demand; net.GeneratorCount = gens; net.ConsumerCount = cons;
-                net.Satisfaction = demand == 0 ? 1000 : (int)Fix.Min(1000, (int)(supply * 1000 / demand));
+
+                // Batteries soak up the surplus and give it back during a shortfall.
+                long fromBatteries = 0;
+                if (supply >= demand)
+                {
+                    long surplus = supply - demand;
+                    foreach (var bat in net.Batteries)
+                    {
+                        if (surplus <= 0) break;
+                        long take = System.Math.Min(surplus, bat.RoomToCharge());
+                        bat.AddCharge(take); surplus -= take;
+                    }
+                }
+                else
+                {
+                    long deficit = demand - supply;
+                    foreach (var bat in net.Batteries)
+                    {
+                        if (deficit <= 0) break;
+                        long give = System.Math.Min(deficit, bat.AvailableToDischarge());
+                        bat.AddCharge(-give); deficit -= give; fromBatteries += give;
+                    }
+                }
+                net.FromBatteries = fromBatteries;
+                net.Stored = 0; net.StorageCapacity = 0;
+                foreach (var bat in net.Batteries) { net.Stored += bat.Charge; net.StorageCapacity += bat.Capacity; }
+
+                long available = supply + fromBatteries;
+                net.Satisfaction = demand == 0 ? 1000 : (int)System.Math.Min(1000L, available * 1000 / demand);
                 foreach (var b in net.Members) b.PowerSatisfaction = b.Def.PowerUse > 0 ? net.Satisfaction : 1000;
             }
             foreach (var b in buildings)

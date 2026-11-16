@@ -230,6 +230,7 @@ namespace NewGen.Game
                 return;
             }
             if (B is ArmBuilding arm) { UpdateArm(arm); return; }
+            if (B is RouterBuilding router) { UpdateRouterItems(router); return; }
             if (frames != null) body.sprite = frames[FrameIndex(dt)];
             // icon flashes
             if (icon.enabled) icon.color = new Color(1f, 1f, 1f, 0.55f + 0.45f * Mathf.Sin(Time.time * 6f));
@@ -259,6 +260,30 @@ namespace NewGen.Game
                          ?? FallbackArt.Box(32, 32, new Color32(230, 190, 60, 255), false);
                 float t = it.Pos / (float)Fix.SubPerTile - 0.5f;
                 sr.transform.localPosition = new Vector3(0.5f + d.X * t, 0.5f + d.Y * t, 0f);
+            }
+        }
+
+        void UpdateRouterItems(RouterBuilding router)
+        {
+            if (router.ItemsVersion == lastItemsVersion) return;
+            lastItemsVersion = router.ItemsVersion;
+            while (itemSprites.Count < router.Items.Count)
+            {
+                var sr = MakeSprite(transform, "item", body.sortingOrder + 1);
+                sr.transform.localScale = Vector3.one * 0.7f;
+                itemSprites.Add(sr);
+            }
+            for (int i = 0; i < itemSprites.Count; i++)
+            {
+                var sr = itemSprites[i];
+                if (i >= router.Items.Count) { sr.enabled = false; continue; }
+                sr.enabled = true;
+                var def = Root.Db.Item(router.Items[i].Item);
+                sr.sprite = SpriteRegistry.TryGet(def != null ? def.SpriteKey : "item_" + router.Items[i].Item)
+                         ?? FallbackArt.Box(32, 32, new Color32(230, 190, 60, 255), false);
+                // fan the waiting items out a little so you can see how many are queued
+                float a = i * 1.6f;
+                sr.transform.localPosition = new Vector3(0.5f + Mathf.Cos(a) * 0.18f, 0.5f + Mathf.Sin(a) * 0.18f, 0f);
             }
         }
 

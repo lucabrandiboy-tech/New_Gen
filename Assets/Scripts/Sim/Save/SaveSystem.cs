@@ -16,7 +16,7 @@ namespace NewGen.Sim.Save
     public static class SaveSystem
     {
         const uint Magic = 0x5653474E; // "NGSV"
-        public const int Version = 2;   // 2: arms store input/output sides instead of a swing direction
+        public const int Version = 3;   // 3: fuel generators, batteries and routers
 
         // ------------------------------------------------------------------ rules
         public static bool CanManualSave(Simulation sim, out int secondsLeft)
@@ -104,6 +104,14 @@ namespace NewGen.Sim.Save
                 case ConveyorBuilding cv:
                     w.Write(cv.Items.Count); foreach (var it in cv.Items) { w.Write(it.Item); w.Write(it.Pos); }
                     w.Write(cv.FeedFrom.HasValue); w.Write((byte)(cv.FeedFrom ?? Dir.North)); break;
+                case FuelGeneratorBuilding fg:
+                    WriteInventory(w, fg.Fuel); w.Write(fg.BurnLeft); w.Write(fg.BurnTotal); break;
+                case BatteryBuilding bt:
+                    w.Write(bt.Charge); break;
+                case RouterBuilding rt:
+                    w.Write(rt.Items.Count);
+                    foreach (var h in rt.Items) { w.Write(h.Item); w.Write(h.Ticks); w.Write((byte)h.From); }
+                    break;
                 case ArmBuilding a:
                     w.Write(a.Holding ?? ""); w.Write(a.SwingProgress);
                     w.Write(a.InputSide.HasValue); w.Write((byte)(a.InputSide ?? Dir.North));
@@ -201,6 +209,17 @@ namespace NewGen.Sim.Save
                         for (int i = 0; i < n; i++) cv.Items.Add(new ConveyorItem { Item = r.ReadString(), Pos = r.ReadInt32() });
                         bool has = r.ReadBoolean(); var d = (Dir)r.ReadByte(); cv.FeedFrom = has ? d : (Dir?)null; break;
                     }
+                case FuelGeneratorBuilding fg:
+                    ReadInventory(r, sim.Db, fg.Fuel); fg.BurnLeft = r.ReadInt32(); fg.BurnTotal = r.ReadInt32(); break;
+                case BatteryBuilding bt:
+                    bt.Charge = r.ReadInt64(); break;
+                case RouterBuilding rt:
+                    {
+                        int n2 = r.ReadInt32();
+                        for (int i = 0; i < n2; i++)
+                            rt.Items.Add(new RouterBuilding.Held { Item = r.ReadString(), Ticks = r.ReadInt32(), From = (Dir)r.ReadByte() });
+                        break;
+                    }
                 case ArmBuilding a:
                     {
                         a.Holding = NullIfEmpty(r.ReadString()); a.SwingProgress = r.ReadInt32();
@@ -253,6 +272,9 @@ namespace NewGen.Sim.Save
                 if (b is DrillBuilding d) Mix(d.Progress);
                 if (b is DataCenterBuilding dc) Mix(dc.Heat);
                 if (b is ArmBuilding a) Mix(a.SwingProgress);
+                if (b is FuelGeneratorBuilding fg) { Mix(fg.BurnLeft); MixInv(fg.Fuel); }
+                if (b is BatteryBuilding bt) Mix(bt.Charge);
+                if (b is RouterBuilding rt) foreach (var held in rt.Items) { Mix(held.Ticks); Mix(StableHash(held.Item)); }
             }
             foreach (var p in sim.Players) { Mix(p.Pos.X); Mix(p.Pos.Y); Mix(p.Health); Mix(p.Temperature); MixInv(p.Inventory); }
             Mix(sim.Research.ProgressPermille);

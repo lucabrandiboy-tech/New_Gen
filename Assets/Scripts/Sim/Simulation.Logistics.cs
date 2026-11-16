@@ -19,6 +19,7 @@ namespace NewGen.Sim
                 case BuildingKind.Tube:
                 case BuildingKind.Wire: return new ConveyorBuilding();
                 case BuildingKind.Arm: return new ArmBuilding();
+                case BuildingKind.Router: return new RouterBuilding();
                 default: return null;
             }
         }
@@ -76,15 +77,13 @@ namespace NewGen.Sim
             foreach (var c in conveyorsScratch) if (!c.Removed) c.TryTransfer(this);
         }
 
-        /// <summary>Push one item into whatever is on a tile (conveyor entry or building input). Used by drills/crafters.</summary>
-        public bool PushItemTo(TilePos tile, string item)
+        /// <summary>Push one item onto a tile (belt, router or machine input). Used by drills and crafters.</summary>
+        public bool PushItemTo(TilePos tile, string item, Dir from = Dir.South)
         {
             var b = BuildingAt(tile);
             if (b == null || b.IsDestroyed) return false;
-            if (b is ConveyorBuilding c) return c.CarriesItem(Db, item) && c.TryInsert(item, 0);
-            var inv = b.InputInventory;
-            if (inv == null || !b.Accepts(item)) return false;
-            return inv.Add(item, 1) == 0;
+            if (b is ConveyorBuilding c && !c.CarriesItem(Db, item)) return false;
+            return b.TryTakeIn(item, from);
         }
     }
 }

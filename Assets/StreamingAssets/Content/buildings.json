@@ -32,6 +32,29 @@
       "cost": { "copper_plate": 1 } },
     // Occupies one tile; moves items between any two of its four neighbours (player picks input/output).
     { "id": "arm", "name": "Arm", "width": 1, "height": 1, "kind": "Arm", "maxHealth": 80, "powerUse": 5000, "armTicksPerSwing": 10,
-      "cost": { "iron_plate": 2, "copper_plate": 1 } }
+      "cost": { "iron_plate": 2, "copper_plate": 1 } },
+
+    // Splits and merges belt lines on a single tile: anything can push items in from any side,
+    // and it sends them out to whichever neighbours will take them, taking turns.
+    { "id": "router", "name": "Router", "width": 1, "height": 1, "kind": "Router", "rotatable": false, "maxHealth": 60,
+      "powerUse": 1000, "routerSlots": 4, "routerTicksPerItem": 6,
+      "cost": { "iron_plate": 2 } },
+
+    // --- power beyond the dying pod ---
+    // Burns coal. Full output while something is alight, nothing at all when the fuel runs out.
+    { "id": "coal_burner", "name": "Coal burner", "width": 2, "height": 2, "kind": "FuelGenerator", "maxHealth": 300,
+      "powerOutput": 180000, "fuelSlots": 2, "warmthRadiusTiles": 4, "warmthPerTick": 5,
+      "animationMode": "loop", "animationFps": 8,
+      "cost": { "iron_plate": 10, "stone": 10 } },
+    // Free power, but weak, and it has to be built in quantity. No fuel, no upkeep.
+    { "id": "wind_turbine", "name": "Wind turbine", "width": 2, "height": 2, "kind": "Generator", "rotatable": false, "maxHealth": 150,
+      "powerOutput": 30000,
+      "animationMode": "loop", "animationFps": 12,
+      "cost": { "iron_plate": 12, "copper_plate": 4 } },
+    // Soaks up surplus power and gives it back during a shortfall.
+    // energyCapacity is in watt-ticks: 30 watt-ticks = 1 joule, so this holds 5 MJ.
+    { "id": "battery", "name": "Battery bank", "width": 1, "height": 1, "kind": "Battery", "rotatable": false, "maxHealth": 120,
+      "energyCapacity": 150000000, "maxThroughput": 60000,
+      "cost": { "iron_plate": 6, "copper_plate": 8 } }
   ]
 }

@@ -13,6 +13,7 @@ namespace NewGen.SimTest
             WorldTests.Run(repoRoot);
             EntityTests.Run(repoRoot);
             PowerTests.Run(repoRoot);
+            PowerPlusTests.Run(repoRoot);
             LogisticsTests.Run(repoRoot);
             MachineTests.Run(repoRoot);
             PlayerTests.Run(repoRoot);

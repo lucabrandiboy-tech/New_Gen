@@ -38,7 +38,7 @@ namespace NewGen.Sim.Entities
             // try to push the buffered item out first
             if (Buffered != null)
             {
-                if (sim.PushItemTo(FrontTile(), Buffered)) Buffered = null;
+                if (sim.PushItemTo(FrontTile(), Buffered, Facing.Opposite())) Buffered = null;
                 else return;   // output blocked: stall
             }
             if (minable.Count == 0 || PowerSatisfaction <= 0) return;
@@ -49,7 +49,7 @@ namespace NewGen.Sim.Entities
             Progress -= needed;
             Buffered = minable[NextTileIndex % minable.Count];
             NextTileIndex = (NextTileIndex + 1) % minable.Count;
-            if (sim.PushItemTo(FrontTile(), Buffered)) Buffered = null;
+            if (sim.PushItemTo(FrontTile(), Buffered, Facing.Opposite())) Buffered = null;
         }
 
         public override void CollectContents(List<ItemStack> into)

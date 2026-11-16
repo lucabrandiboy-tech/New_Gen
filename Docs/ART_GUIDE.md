@@ -137,15 +137,17 @@ You asked me to make the Antarctica terrain, so it lives in `Assets/Art/Generate
 
 **You draw:**
 - **All buildings** — the machines themselves (`bld_<name>_idle`, plus any working animations you want).
+- **The conveyor belts and data wires** (`bld_tube_*`, `bld_wire_*`).
+- **The player** (`unit_player_*`).
 - **The UI / HUD / menus.**
 - **The president (faction leader) call screens.**
 
-**Claude makes everything else** and it already exists in `Assets/Art/Generated/`: terrain, ore
-patches, item icons, data cells, the player, conveyor belts and data wires, the arm, HUD warning
-icons, the bullet, and the shared damaged/destroyed art.
+**Claude makes everything else** and it already exists in `Assets/Art/Generated/`: terrain (snow,
+ice, rock, ocean), ore patches, item icons, data cells, HUD warning icons, the bullet, and the
+shared damaged/destroyed art.
 
-Claude has also drawn **stand-in versions of every building**, purely so the game looks finished
-today. The moment you put a file with the same name into `Assets/Art/Sprites/`, yours is used
+Claude has also drawn **stand-in versions of every building, every belt and the player**, purely so
+the game looks finished today. The moment you put a file with the same name into `Assets/Art/Sprites/`, yours is used
 instead — no code change, no asking. Priority is always: **your art > Claude's art > flat placeholder**.
 
 ### "Check"
@@ -164,6 +166,18 @@ Say **"Check"** and Claude lists which of *your* files (buildings, UI, call scre
 | `bld_arm_idle` | 64×96 | 1×1 |
 | `bld_tube_right/left/up/down` | 64×64 | 1×1, flat, one per direction |
 | `bld_wire_right/left/up/down` | 64×64 | 1×1, flat, one per direction |
+| `bld_coal_burner_idle` | 128×160 | 2×2 |
+| `bld_wind_turbine_idle` | 128×160 | 2×2 |
+| `bld_battery_idle` | 64×96 | 1×1 |
+| `bld_router_idle` | 64×96 | 1×1 |
+
+### Player, also yours
+| File | Size | Frames |
+|---|---|---|
+| `unit_player_idle_down` / `_up` / `_side` | 64×64 | 1 |
+| `unit_player_walk_down_4f` / `_up_4f` / `_side_4f` | 256×64 | 4 |
+
+`side` faces right; the game mirrors it for left.
 
 Optional per building: a working animation `bld_<name>_working_<N>f` (and for the drill,
 one per output side: `bld_drill_working_<side>_<N>f`).

@@ -81,6 +81,10 @@ namespace NewGen.EditorTools.Art
             AddBuilding(list, "encoder", 2, 2);
             AddBuilding(list, "datacenter_l1", 4, 4);
             AddBuilding(list, "chest", 1, 1);
+            AddBuilding(list, "coal_burner", 2, 2);
+            AddBuilding(list, "wind_turbine", 2, 2);
+            AddBuilding(list, "battery", 1, 1);
+            AddBuilding(list, "router", 1, 1);
 
             // Conveyors: one flat drawing per direction so the top-left lighting stays correct.
             foreach (string belt in new[] { "bld_tube", "bld_wire" })

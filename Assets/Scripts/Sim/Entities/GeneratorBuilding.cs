@@ -16,6 +16,8 @@ namespace NewGen.Sim.Entities
             return Fix.Permille(Def.PowerOutput, permille);
         }
 
+        public override int PowerOutputNow() => CurrentOutput();
+
         public override void Tick(Simulation sim)
         {
             TicksAlive++;

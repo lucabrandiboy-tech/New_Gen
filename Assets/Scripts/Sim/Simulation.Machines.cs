@@ -27,6 +27,10 @@ namespace NewGen.Sim
                         for (int i = 0; i < c.Inputs.SlotCount; i++) c.Inputs.Filters[i] = "__none__";   // nothing accepted until a recipe is chosen
                         return c;
                     }
+                case BuildingKind.FuelGenerator:
+                    return new FuelGeneratorBuilding { Fuel = new Inventory(Db, def.FuelSlots), Db = Db };
+                case BuildingKind.Battery:
+                    return new BatteryBuilding();
                 case BuildingKind.DataCenter:
                     {
                         var dc = new DataCenterBuilding { Cells = new Inventory(Db, def.InputSlots), CellsDb = Db };

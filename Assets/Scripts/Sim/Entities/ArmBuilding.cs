@@ -86,13 +86,9 @@ namespace NewGen.Sim.Entities
             return dst.Accepts(item);
         }
 
-        static bool GiveTo(Building dst, string item)
-        {
-            if (dst is ConveyorBuilding c) return c.TryInsert(item, 0);
-            var inv = dst.InputInventory;
-            if (inv == null || !dst.Accepts(item)) return false;
-            return inv.Add(item, 1) == 0;
-        }
+        string TakeFromSrc(Building src, Building dst, ContentDatabase db) => TakeFrom(src, dst, db);
+
+        bool GiveTo(Building dst, string item) => dst.TryTakeIn(item, (OutputSide ?? Facing).Opposite());
 
         /// <summary>0..1000 of the way from the input tile to the output tile.</summary>
         public int FlightPermille => Def.ArmTicksPerSwing == 0 ? 0 : SwingProgress / Def.ArmTicksPerSwing;

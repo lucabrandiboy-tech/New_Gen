@@ -2,7 +2,7 @@
   "items": [
     { "id": "iron_ore",     "name": "Iron ore",     "stackSize": 50 },
     { "id": "copper_ore",   "name": "Copper ore",   "stackSize": 50 },
-    { "id": "coal",         "name": "Coal",         "stackSize": 50 },
+    { "id": "coal",         "name": "Coal",         "stackSize": 50, "fuelTicks": 120 },   // one coal runs a burner for 4 seconds
     { "id": "stone",        "name": "Stone",        "stackSize": 50 },
     { "id": "ice",          "name": "Ice",          "stackSize": 50 },
     { "id": "iron_plate",   "name": "Iron plate",   "stackSize": 100 },

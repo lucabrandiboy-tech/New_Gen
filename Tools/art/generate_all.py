@@ -79,6 +79,13 @@ def build(out_dir):
     art['bld_encoder_idle'] = B.encoder(0.0, False)
     art['bld_encoder_working_4f'] = strip([B.encoder(i / 4, True) for i in range(4)])
 
+    art['bld_coal_burner_idle'] = B.coal_burner(0.0)
+    art['bld_coal_burner_working_4f'] = strip([B.coal_burner(0.45 + 0.55 * abs(1 - i / 1.5)) for i in range(4)])
+    art['bld_wind_turbine_idle'] = B.wind_turbine(0.0)
+    art['bld_wind_turbine_working_6f'] = strip([B.wind_turbine(i * 0.349) for i in range(6)])
+    art['bld_battery_idle'] = B.battery(0.6)
+    art['bld_router_idle'] = B.router()
+
     art['bld_datacenter_l1_idle'] = B.datacenter(0.0, False, 0.0)
     art['bld_datacenter_l1_working_4f'] = strip([B.datacenter(i / 4, True, 0.3) for i in range(4)])
 

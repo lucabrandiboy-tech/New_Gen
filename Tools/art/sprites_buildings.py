@@ -285,3 +285,107 @@ def arm(charge=0.0):
     led(d, wx0 + 6, wy0 + 6, DATA if charge > 0 else COAL, 2)
     led(d, wx1 - 8, wy0 + 6, GREENLED, 2)
     return img
+
+# ---------------------------------------------------------------- coal burner (2x2)
+def coal_burner(burn=0.0):
+    img, d, roof, wall = building_shell(2, 2, STEEL)
+    rx0, ry0, rx1, ry1 = roof
+    vents(d, rx0 + 4, ry0 + 4, rx0 + 22, ry1 - 4, STEEL, 6)
+    # chimney, back-right, with smoke when alight
+    shaded_block(d, rx1 - 30, ry0 + 2, rx1 - 8, ry0 + 28, IRON, top=4, body=2, side=1)
+    box(d, rx1 - 26, ry0 + 5, rx1 - 12, ry0 + 11, COAL[1])
+    if burn > 0.1:
+        box(d, rx1 - 24, ry0 + 6, rx1 - 14, ry0 + 9, HOT[1 + int(burn * 3)])
+        for k in range(3):
+            y = ry0 + 2 - k * 0 + k
+            d.point((rx1 - 20 + k * 2, ry0 + 2), fill=COAL[int(3 + burn)])
+    # firebox: a round grate that glows with the burn
+    cx, cy = (rx0 + rx1) // 2 + 6, (ry0 + ry1) // 2 + 6
+    d.ellipse([cx - 24, cy - 19, cx + 24, cy + 19], fill=IRON[1], outline=OUTLINE)
+    d.ellipse([cx - 20, cy - 16, cx + 20, cy + 16], fill=COAL[1])
+    d.arc([cx - 24, cy - 19, cx + 24, cy + 19], 165, 335, fill=IRON[5])
+    if burn > 0:
+        d.ellipse([cx - 15, cy - 11, cx + 15, cy + 11], fill=HOT[1 + min(4, int(burn * 5))])
+        if burn > 0.5:
+            d.ellipse([cx - 8, cy - 5, cx + 8, cy + 5], fill=HOT[5])
+    for x in range(cx - 18, cx + 19, 6):          # grate bars
+        vline(d, x, cy - 14, cy + 14, COAL[2])
+    # fuel hatch on the front face
+    wx0, wy0, wx1, wy1 = wall
+    box(d, wx0 + 10, wy0 + 4, wx1 - 10, wy1 - 5, COAL[1])
+    hline(d, wx0 + 10, wx1 - 10, wy0 + 4, STEEL[4])
+    led(d, wx0 + 5, wy0 + 8, HOT if burn > 0 else COAL, 3)
+    return img
+
+# ---------------------------------------------------------------- wind turbine (2x2)
+def wind_turbine(spin=0.0):
+    """A vertical-axis turbine: the sort that copes with polar wind from any direction."""
+    img, d, roof, wall = building_shell(2, 2, STEEL, wall=18)
+    rx0, ry0, rx1, ry1 = roof
+    cx, cy = (rx0 + rx1) // 2, (ry0 + ry1) // 2
+    # guy wires out to the corners
+    for ax, ay in ((rx0 + 6, ry0 + 6), (rx1 - 6, ry0 + 6), (rx0 + 6, ry1 - 6), (rx1 - 6, ry1 - 6)):
+        d.line([cx, cy, ax, ay], fill=STEEL[1])
+        shaded_block(d, ax - 4, ay - 3, ax + 4, ay + 3, IRON, top=4, body=2, side=1, outline=False)
+    # three solid curved vanes turning about the centre
+    for k in range(3):
+        a = spin + k * 2.094
+        inner, outer = [], []
+        for t in range(13):
+            f = t / 12.0
+            r = 9 + f * 27
+            ang = a + f * 1.05
+            px = cx + r * math.cos(ang)
+            py = cy + r * math.sin(ang) * 0.82
+            # the vane has width, tapering towards the tip
+            w = 5.0 - 2.5 * f
+            nx, ny = -math.sin(ang), math.cos(ang) * 0.82
+            inner.append((px - nx * w, py - ny * w))
+            outer.append((px + nx * w, py + ny * w))
+        poly = inner + outer[::-1]
+        d.polygon([(int(x + 1), int(y + 1)) for x, y in poly], fill=OUTLINE)
+        d.polygon([(int(x), int(y)) for x, y in poly], fill=IRON[3])
+        # lit edge along the leading side
+        for i in range(len(inner) - 1):
+            d.line([int(inner[i][0]), int(inner[i][1]), int(inner[i + 1][0]), int(inner[i + 1][1])], fill=IRON[5])
+    d.ellipse([cx - 9, cy - 8, cx + 9, cy + 8], fill=STEEL[2], outline=OUTLINE)
+    d.ellipse([cx - 4, cy - 3, cx + 4, cy + 3], fill=STEEL[5])
+    wx0, wy0, wx1, wy1 = wall
+    led(d, wx0 + 6, wy0 + 6, GREENLED, 2)
+    return img
+
+# ---------------------------------------------------------------- battery bank (1x1)
+def battery(charge=0.0):
+    img, d, roof, wall = building_shell(1, 1, STEEL, wall=18)
+    rx0, ry0, rx1, ry1 = roof
+    # four cells side by side
+    for i in range(4):
+        x = rx0 + 5 + i * 13
+        shaded_block(d, x, ry0 + 6, x + 10, ry1 - 5, IRON, top=4, body=2, side=1, outline=False)
+        lit = charge * 4 > i
+        box(d, x + 2, ry0 + 9, x + 8, ry1 - 8, (GREENLED if lit else COAL)[3 if lit else 1])
+        d.point((x + 5, ry0 + 5), fill=COPPER[4])       # terminal
+    hline(d, rx0 + 5, rx1 - 5, ry0 + 4, COPPER[3])      # bus bar
+    wx0, wy0, wx1, wy1 = wall
+    led(d, wx0 + 6, wy0 + 6, GREENLED if charge > 0.05 else WARN, 2)
+    return img
+
+# ---------------------------------------------------------------- router (1x1)
+def router():
+    """A flat junction plate: items can come in from any side and leave by any other."""
+    img, d, roof, wall = building_shell(1, 1, STEEL, wall=14)
+    rx0, ry0, rx1, ry1 = roof
+    cx, cy = (rx0 + rx1) // 2, (ry0 + ry1) // 2
+    box(d, rx0 + 4, ry0 + 4, rx1 - 4, ry1 - 4, COAL[2])
+    # four mouths
+    for dx, dy in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+        mx, my = cx + dx * 20, cy + dy * 16
+        shaded_block(d, mx - 7, my - 5, mx + 7, my + 5, IRON, top=4, body=2, side=1, outline=False)
+    # turntable
+    d.ellipse([cx - 13, cy - 11, cx + 13, cy + 11], fill=IRON[3], outline=OUTLINE)
+    d.arc([cx - 13, cy - 11, cx + 13, cy + 11], 165, 335, fill=IRON[5])
+    d.ellipse([cx - 6, cy - 5, cx + 6, cy + 5], fill=DATA[3])
+    d.point((cx, cy), fill=DATA[5])
+    wx0, wy0, wx1, wy1 = wall
+    led(d, wx0 + 6, wy0 + 5, DATA, 2)
+    return img

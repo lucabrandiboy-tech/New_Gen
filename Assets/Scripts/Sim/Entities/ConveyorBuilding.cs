@@ -51,6 +51,8 @@ namespace NewGen.Sim.Entities
 
         public override bool Accepts(string item) => !IsDestroyed && HasRoomAtEntry;
 
+        public override bool TryTakeIn(string item, Dir from) => TryInsert(item, 0);
+
         public bool TryInsert(string item, int pos = 0)
         {
             if (IsDestroyed || !HasRoomAt(pos)) return false;
@@ -97,12 +99,21 @@ namespace NewGen.Sim.Entities
             var head = Items[Items.Count - 1];
             if (head.Pos < Exit) return;
             if (SpeedThisTick() == 0) return;
-            var next = sim.BuildingAt(FrontTile()) as ConveyorBuilding;
-            if (next == null || next.IsWire != IsWire || next.Facing == Facing.Opposite()) return;
-            if (!next.TryInsert(head.Item, 0)) return;
+            var ahead = sim.BuildingAt(FrontTile());
+            if (ahead == null || ahead.IsDestroyed) return;
+            if (ahead is ConveyorBuilding next)
+            {
+                if (next.IsWire != IsWire || next.Facing == Facing.Opposite()) return;
+                if (!next.TryInsert(head.Item, 0)) return;
+                if (next.FeedFrom != Facing.Opposite()) next.FeedFrom = Facing.Opposite();
+            }
+            else if (ahead is RouterBuilding router)
+            {
+                if (!router.TryTakeIn(head.Item, Facing.Opposite())) return;
+            }
+            else return;
             Items.RemoveAt(Items.Count - 1);
             ItemsVersion++;
-            if (next.FeedFrom != Facing.Opposite()) next.FeedFrom = Facing.Opposite();
         }
 
         public override void CollectContents(List<ItemStack> into)

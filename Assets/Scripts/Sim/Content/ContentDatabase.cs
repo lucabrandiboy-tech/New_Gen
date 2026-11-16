@@ -59,7 +59,7 @@ namespace NewGen.Sim.Content
             }
             foreach (var o in ReadList(readFile, "items.json", "items"))
             {
-                var it = new ItemDef { Id = o.Str("id"), Name = o.Str("name", o.Str("id")), StackSize = o.Int("stackSize", 100), Category = o.Str("category", "material") };
+                var it = new ItemDef { Id = o.Str("id"), Name = o.Str("name", o.Str("id")), StackSize = o.Int("stackSize", 100), Category = o.Str("category", "material"), FuelTicks = o.Int("fuelTicks") };
                 Items[it.Id] = it;
             }
             foreach (var o in ReadList(readFile, "recipes.json", "recipes"))
@@ -83,6 +83,8 @@ namespace NewGen.Sim.Content
                     MineTicksPerItem = o.Int("mineTicksPerItem"), CrafterType = o.Str("crafterType"), InputSlots = o.Int("inputSlots", 2), OutputSlots = o.Int("outputSlots", 1),
                     Slots = o.Int("slots"), SubPerTick = o.Int("subPerTick"), ItemsPerTile = o.Int("itemsPerTile", 4), ArmTicksPerSwing = o.Int("armTicksPerSwing", 30),
                     AnimationMode = o.Str("animationMode", "loop"), AnimationFps = o.Int("animationFps", 10),
+                    FuelSlots = o.Int("fuelSlots", 1), EnergyCapacity = o.Long("energyCapacity"), MaxThroughput = o.Int("maxThroughput"),
+                    RouterSlots = o.Int("routerSlots", 4), RouterTicksPerItem = o.Int("routerTicksPerItem", 6),
                     ResearchPerTick = o.Int("researchPerTick"), HeatPerTick = o.Int("heatPerTick"), MaxHeat = o.Int("maxHeat", 1000),
                     WarmthRadiusTiles = o.Int("warmthRadiusTiles"), WarmthPerTick = o.Int("warmthPerTick"),
                 };
@@ -134,6 +136,8 @@ namespace NewGen.Sim.Content
                 foreach (var s in b.Cost) if (!Items.ContainsKey(s.Item)) Problems.Add($"building {b.Id}: unknown cost item {s.Item}");
                 if (b.Kind == BuildingKind.Crafter && string.IsNullOrEmpty(b.CrafterType)) Problems.Add($"building {b.Id}: crafter needs crafterType");
                 if (b.IsConveyor && b.SubPerTick <= 0) Problems.Add($"building {b.Id}: conveyor needs subPerTick");
+                if (b.Kind == BuildingKind.FuelGenerator && b.PowerOutput <= 0) Problems.Add($"building {b.Id}: fuel generator needs powerOutput");
+                if (b.Kind == BuildingKind.Battery && (b.EnergyCapacity <= 0 || b.MaxThroughput <= 0)) Problems.Add($"building {b.Id}: battery needs energyCapacity and maxThroughput");
             }
             foreach (var t in Techs.Values)
             {
