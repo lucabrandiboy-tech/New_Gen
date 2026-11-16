@@ -63,8 +63,8 @@ namespace NewGen.SimTest
                 var sm = s2.Place("smelter", new TilePos(3, 0), Dir.North) as CrafterBuilding;
                 Check.True(sm != null, "smelter is a crafter");
                 Check.True(!sm.Accepts("iron_ore"), "no recipe -> accepts nothing");
-                Check.Eq(1, s2.AvailableRecipes("smelter").Count, "test recipe available to smelters");
-                Check.Eq(0, s2.AvailableRecipes("assembler").Count, "not to assemblers");
+                Check.Eq(3, s2.AvailableRecipes("smelter").Count, "2 real smelter recipes + the test one");
+                Check.Eq(1, s2.AvailableRecipes("assembler").Count, "assembler has the circuit recipe");
                 sm.SetRecipe(s2, tmp.Id, null);
                 Check.True(sm.Accepts("iron_ore") && !sm.Accepts("coal"), "accepts only recipe inputs");
                 sm.Inputs.Add("iron_ore", 5);

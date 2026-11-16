@@ -1,7 +1,28 @@
 {
-  // Empty on purpose: the owner adds recipes once sprites exist.
-  // Example of the format:
-  // { "id": "iron_plate", "name": "Iron plate", "crafter": "smelter", "ticks": 96,
-  //   "inputs": { "iron_ore": 1 }, "outputs": { "iron_plate": 1 }, "unlockedAtStart": true }
-  "recipes": []
+  // The Milestone 1 production chain:
+  //   hand-mine stone          -> place a smelter (costs stone only, so nothing is needed first)
+  //   ore -> plates            (smelter, 10 ticks = exactly the 10 frames of its animation)
+  //   plates -> circuits       (assembler)
+  //   circuits + coal -> cells (encoder)
+  //   cells -> research        (data center)
+  // The hand versions of the plates exist so the first few can be made with no machines at all,
+  // but they are 12x slower, which is the "hand-crafting early, slow" the design doc asks for.
+  // "ticks" are simulation ticks; 30 ticks = 1 second.
+  "recipes": [
+    { "id": "hand_iron_plate",   "name": "Iron plate (by hand)",   "crafter": "hand", "ticks": 120,
+      "inputs": { "iron_ore": 1 },   "outputs": { "iron_plate": 1 } },
+    { "id": "hand_copper_plate", "name": "Copper plate (by hand)", "crafter": "hand", "ticks": 120,
+      "inputs": { "copper_ore": 1 }, "outputs": { "copper_plate": 1 } },
+
+    { "id": "iron_plate",   "name": "Iron plate",   "crafter": "smelter", "ticks": 10,
+      "inputs": { "iron_ore": 1 },   "outputs": { "iron_plate": 1 } },
+    { "id": "copper_plate", "name": "Copper plate", "crafter": "smelter", "ticks": 10,
+      "inputs": { "copper_ore": 1 }, "outputs": { "copper_plate": 1 } },
+
+    { "id": "circuit", "name": "Logic circuit", "crafter": "assembler", "ticks": 40,
+      "inputs": { "iron_plate": 1, "copper_plate": 1 }, "outputs": { "circuit": 1 } },
+
+    { "id": "cell_resource", "name": "Resource data cell", "crafter": "encoder", "ticks": 90,
+      "inputs": { "circuit": 2, "coal": 1 }, "outputs": { "cell_resource": 1 } }
+  ]
 }

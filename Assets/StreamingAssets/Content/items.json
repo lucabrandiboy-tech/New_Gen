@@ -7,6 +7,7 @@
     { "id": "ice",          "name": "Ice",          "stackSize": 50 },
     { "id": "iron_plate",   "name": "Iron plate",   "stackSize": 100 },
     { "id": "copper_plate", "name": "Copper plate", "stackSize": 100 },
+    { "id": "circuit",       "name": "Logic circuit",      "stackSize": 100 },
     { "id": "cell_resource", "name": "Resource data cell", "stackSize": 200, "category": "cell" }
   ]
 }

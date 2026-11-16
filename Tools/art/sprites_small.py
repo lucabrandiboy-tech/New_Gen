@@ -52,6 +52,22 @@ def data_cell():
     hline(d, 9, 22, 7, STEEL[5])
     return img
 
+def circuit_item():
+    """A small green board with copper traces and a dark chip."""
+    img, d = new(32, 32)
+    board = [rgb(c) for c in ('#07170C', '#0E3018', '#165024', '#1E7233', '#2E9447', '#58BE6C')]
+    shaded_block(d, 5, 7, 26, 24, board, top=5, body=3, side=1)
+    for y in (11, 15, 19):
+        hline(d, 8, 23, y, COPPER[4])
+        d.point((8, y), fill=COPPER[5])
+    for x in (12, 19):
+        vline(d, x, 9, 22, COPPER[3])
+    shaded_block(d, 12, 13, 19, 19, COAL, top=3, body=1, side=0, outline=False)
+    d.point((13, 14), fill=DATA[4])
+    for x in range(7, 25, 4):                       # legs
+        d.point((x, 25), fill=IRON[4]); d.point((x, 6), fill=IRON[4])
+    return img
+
 # ---------------------------------------------------------------- ore patches (64x64)
 def ore_patch(ramp, seed, count=7):
     """Rocks on a transparent background so the terrain shows between them."""

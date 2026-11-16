@@ -66,6 +66,16 @@ Plain **JSON files** in `Assets/StreamingAssets/Content/` (`items.json`, `buildi
 ### 4d. Audio (proposed)
 **Unity Audio Mixer.** Free, built in, no extra licence or plugin; FMOD's strengths (adaptive music, designer tooling) are not needed for a solo project yet and it adds a licence step before release. Nothing is built; no audio files exist (`LICENSES.md` empty).
 
+## 4d-2. Production chain (built 2026-11-16)
+`stone (hand-mined) -> smelter` bootstraps everything, then:
+`iron/copper ore -> plates` (smelter, 10 ticks = its 10 animation frames) ->
+`plates -> logic circuit` (assembler, 40 ticks) ->
+`2 circuits + 1 coal -> resource data cell` (encoder, 90 ticks) -> `cells -> research` (data center).
+Hand versions of both plates exist at 120 ticks (12x slower) so the first ones need no machine.
+Buildings cost materials straight out of your inventory when placed — there is no separate
+"building item" to craft. **The logic circuit is a Claude invention to give the assembler a job;
+say the word and it goes, it is one line of JSON.** [PENDING owner approval]
+
 ## 4e. Rules built so far (Milestone 1) — all [BUILT, not owner-tested] unless marked
 - **Power:** wires and tubes are conductors and join each other side by side. Any other building joins a network when its footprint touches a conductor. Buildings do not pass power to each other directly. Each tick satisfaction = supply/demand (capped 100%); machines run at that speed. Pod reactor: 200 kW, decays to 10% over 2 hours. [PENDING approval of these rules]
 - **Logistics:** tubes carry items, data-wires carry data cells, 4 per tile, 1 tile per 8 ticks. Items hold when a tube is unpowered; wires never need power. Head-on conveyors do not connect. Arms occupy **one tile** and move items between **any two of their four neighbours** (no diagonals): the player clicks the arm and picks an input tile then an output tile, and the item visibly flies across. 10 ticks per trip. Placing one wires it behind→front by default so belt-building stays quick. One sprite, no facing. [DECIDED 2026-11-14, replaces the 2026-11-12 oversized-sprite design]

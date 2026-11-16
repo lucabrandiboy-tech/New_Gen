@@ -26,7 +26,15 @@ namespace NewGen.SimTest
             Check.Eq(3, Db.Building("drill").Width, "drill is 3 wide");
             Check.Eq(4, Db.Building("datacenter_l1").Height, "datacenter 4 tall");
             Check.Eq(30, Db.Balance.TicksPerSecond, "balance loaded");
-            Check.Eq(0, Db.Recipes.Count, "no recipes yet (owner decision)");
+            Check.Eq(6, Db.Recipes.Count, "6 recipes");
+            Check.Eq("smelter", Db.Recipe("iron_plate").Crafter, "iron plate is smelted");
+            Check.Eq(10, Db.Recipe("iron_plate").Ticks, "smelt takes 10 ticks = the 10 animation frames");
+            Check.Eq(120, Db.Recipe("hand_iron_plate").Ticks, "the hand version is 12x slower");
+            Check.Eq("assembler", Db.Recipe("circuit").Crafter, "circuits are assembled");
+            Check.Eq("encoder", Db.Recipe("cell_resource").Crafter, "cells are encoded");
+            Check.True(Db.Item("circuit") != null, "circuit item exists");
+            Check.Eq(12, Db.Building("smelter").Cost[0].Count, "first smelter costs 12 stone only");
+            Check.Eq("stone", Db.Building("smelter").Cost[0].Item, "...and nothing else, so it bootstraps");
             Check.Eq(1, Db.Techs.Count, "placeholder tech");
             Check.Eq("No power", Db.Text("alert.no_power", "?"), "loc lookup");
             Check.Eq("fallback", Db.Text("missing.key", "fallback"), "loc fallback");

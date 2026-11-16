@@ -36,6 +36,7 @@ def build(out_dir):
     art['item_ice'] = S.ice_item()
     art['item_iron_plate'] = S.plate_item(IRON)
     art['item_copper_plate'] = S.plate_item(COPPER)
+    art['item_circuit'] = S.circuit_item()
     art['cell_resource'] = S.data_cell()
     art['res_iron_01'] = S.ore_patch(IRON, 1)
     art['res_copper_01'] = S.ore_patch(COPPER, 2)

@@ -47,7 +47,11 @@ namespace NewGen.SimTest
             Check.Eq(PlaceResult.BadTerrain, sim.CanPlace("chest", new TilePos(edge, 0), Dir.North), "cannot build on ocean");
 
             var pay = new Inventory(db, 4);
-            Check.Eq(PlaceResult.Ok, sim.CanPlace("chest", new TilePos(10, 10), Dir.North, pay), "free (no cost yet) with empty payer");
+            Check.Eq(PlaceResult.MissingItems, sim.CanPlace("chest", new TilePos(10, 10), Dir.North, pay), "cannot afford a chest with nothing");
+            pay.Add("iron_plate", 4);
+            Check.Eq(PlaceResult.Ok, sim.CanPlace("chest", new TilePos(10, 10), Dir.North, pay), "4 iron plates is enough");
+            sim.Place("chest", new TilePos(10, 10), Dir.North, pay);
+            Check.Eq(0, pay.Count("iron_plate"), "placing spent the plates");
 
             Check.Section("Removal / damage");
             ((ChestBuilding)chest).Storage.Add("coal", 7);
