@@ -133,31 +133,38 @@ You asked me to make the Antarctica terrain, so it lives in `Assets/Art/Generate
 
 ---
 
-## 7. "Check" — still to draw before Milestone 1 is finished
-Say **"Check"** and Claude lists what's left (compares this list with what's in `Assets/Art/Sprites/`). Terrain is made by Claude.
+## 7. Who draws what (changed 2026-11-16)
 
-**Player** (64×64 per frame)
-- `unit_player_idle_down`, `unit_player_idle_up`, `unit_player_idle_side`
-- `unit_player_walk_down_4f`, `unit_player_walk_up_4f`, `unit_player_walk_side_4f` (256×64)
+**You draw:**
+- **All buildings** — the machines themselves (`bld_<name>_idle`, plus any working animations you want).
+- **The UI / HUD / menus.**
+- **The president (faction leader) call screens.**
 
-**Buildings — one `_idle` picture each**
-- `bld_crashpod_idle` (192×224) · `bld_drill_idle` (192×224) · `bld_smelter_idle` (128×160)
-- `bld_assembler_idle` (192×224) · `bld_encoder_idle` (128×160) · `bld_datacenter_l1_idle` (256×288) · `bld_chest_idle` (64×96)
+**Claude makes everything else** and it already exists in `Assets/Art/Generated/`: terrain, ore
+patches, item icons, data cells, the player, conveyor belts and data wires, the arm, HUD warning
+icons, the bullet, and the shared damaged/destroyed art.
 
-**Shared broken art** (64×64, one each for the whole game): `bld_damaged`, `bld_destroyed`
+Claude has also drawn **stand-in versions of every building**, purely so the game looks finished
+today. The moment you put a file with the same name into `Assets/Art/Sprites/`, yours is used
+instead — no code change, no asking. Priority is always: **your art > Claude's art > flat placeholder**.
 
-**Drill working animations** (one per output side the ore comes from)
-- `bld_drill_working_right_3f`, `_up_3f`, `_down_3f` (576×224 each) · `bld_drill_working_left_5f` (960×224)
+### "Check"
+Say **"Check"** and Claude lists which of *your* files (buildings, UI, call screens) are still missing.
 
-**Furnace animation**: `bld_smelter_working_10f` (1280×160)
+### Buildings still to draw — one `_idle` each
+| File | Size | Footprint |
+|---|---|---|
+| `bld_crashpod_idle` | 192×224 | 3×3 |
+| `bld_drill_idle` | 192×224 | 3×3 |
+| `bld_smelter_idle` | 128×160 | 2×2 |
+| `bld_assembler_idle` | 192×224 | 3×3 |
+| `bld_encoder_idle` | 128×160 | 2×2 |
+| `bld_datacenter_l1_idle` | 256×288 | 4×4 |
+| `bld_chest_idle` | 64×96 | 1×1 |
+| `bld_arm_idle` | 64×96 | 1×1 |
+| `bld_tube_right/left/up/down` | 64×64 | 1×1, flat, one per direction |
+| `bld_wire_right/left/up/down` | 64×64 | 1×1, flat, one per direction |
 
-**Conveyors** (64×64, flat, one per direction): `bld_tube_right`, `bld_tube_left`, `bld_tube_up`, `bld_tube_down`, and the same four as `bld_wire_*`
-**Arm** (64×96): `bld_arm_idle`
-
-**Resource patches** (64×64, transparent around the ore): `res_iron_01`, `res_copper_01`, `res_coal_01`, `res_stone_01`
-
-**Items** (32×32): `item_iron_ore`, `item_copper_ore`, `item_coal`, `item_stone`, `item_ice`, `item_iron_plate`, `item_copper_plate`
-**Data Cell** (32×32): `cell_resource`
-
-**Icons** (24×24, flash above machines): `icon_nopower`, `icon_missing_input`, `icon_overheat`
-**Bullet** (12×6): `fx_bullet`
+Optional per building: a working animation `bld_<name>_working_<N>f` (and for the drill,
+one per output side: `bld_drill_working_<side>_<N>f`).
+Optional game-wide: `bld_damaged` and `bld_destroyed` (64×64) if you dislike Claude's.

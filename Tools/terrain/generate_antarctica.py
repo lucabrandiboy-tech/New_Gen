@@ -241,7 +241,28 @@ def make_rock(seed):
     rgb[speck] = np.array(ROCK[4], np.float32)
     return rgb
 
-TYPES = {"snow": (make_snow, 4101), "ice": (make_ice, 5202), "rock": (make_rock, 6303)}
+# ------------------------------------------------------------------ OCEAN: cold open water
+OCEAN = [(16, 28, 48), (22, 40, 66), (30, 54, 86), (41, 70, 106), (55, 90, 130)]
+
+def make_ocean(seed):
+    rng = np.random.default_rng(seed)
+    swell = fbm(rng, [(3, 3, 1.0), (6, 6, 0.6), (12, 12, 0.3)])
+    ripple = fbm(rng, [(8, 24, 1.0), (16, 48, 0.5)])
+    fine = fbm(rng, [(48, 48, 1.0)])
+    height = swell * 6 + ripple * 2
+    v = 0.45 + shade(height, 5.0) * 0.4 + (swell - 0.5) * 0.3 + (fine - 0.5) * 0.08
+    idx = clean_orphans(quantize(v, len(OCEAN), 0.25), 2)
+    rgb = pal(idx, OCEAN)
+    # a few pale foam crests on the highest ripples
+    crest = (ripple > 0.74) & (shade(height, 5.0) > 0.25)
+    rgb[crest] = np.array((96, 132, 170), np.float32)
+    # scattered brash ice
+    bits = (rng.random((S, S)) > 0.9988)
+    rgb[bits] = np.array((198, 216, 236), np.float32)
+    rgb[shift(bits, 1, 1) & ~bits] = np.array((120, 150, 180), np.float32)
+    return rgb
+
+TYPES = {"snow": (make_snow, 4101), "ice": (make_ice, 5202), "rock": (make_rock, 6303), "ocean": (make_ocean, 7404)}
 
 # ------------------------------------------------------------------ output
 def to_img(rgb):

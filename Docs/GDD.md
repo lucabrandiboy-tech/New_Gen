@@ -81,6 +81,7 @@ Plain **JSON files** in `Assets/StreamingAssets/Content/` (`items.json`, `buildi
 ## 5. Art
 - **64×64 px tiles**, 3/4 top-down, Pixels Per Unit 64, point filtering. [DECIDED — briefly 128 on 2026-11-09, reverted to 64 on 2026-11-10]
 - Tool: Pixelorama. Pipeline and naming: see `ART_GUIDE.md`. [DECIDED]
+- **Division of art labour [DECIDED 2026-11-16]:** owner draws the buildings, the UI/HUD and the faction-leader call screens. Claude makes everything else (terrain, player, items, ore, belts, wires, arm, icons, effects) plus stand-in buildings. Owner art always overrides Claude's.
 - Import pipeline: PNGs in `Assets/Art/Sprites` (owner), `Assets/Art/Generated` (Claude-made art) and `Assets/Art/_Placeholders` are auto-imported (point filter, uncompressed, 64 PPU). `_<N>f` suffix = N-frame horizontal sheet. A sprite registry maps names → sprites; priority owner > generated > placeholder, with no code changes. Buildings pivot bottom-left, everything else centre. [BUILT — owner-tested 2026-11-09: compiles, placeholders + override + animation slicing work]
 - Sprite list & sizes (building height = footprint + 32 px, items 32×32, player 3 directions with mirrored side): [DECIDED 2026-11-09]
 - Working-state glow via 2D light: [DECIDED — built later with the building system]
