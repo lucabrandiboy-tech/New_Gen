@@ -27,8 +27,10 @@
   (`ChainTests`): hand-mined stone buys the first smelter, ore becomes plates, plates become
   circuits, circuits + coal become data cells, cells finish a research. None of it has been played
   in Unity yet.
-- **Power runs out.** The pod reactor decays to 10% over two hours and there is no other power
-  source yet, so a factory this size eventually browns out. Coal burners / turbines are the next job.
+- Power beyond the pod now exists (coal burner, wind turbine, battery bank) and a belt **router**
+  splits and merges lines. All proven in simulation, none of it seen on screen.
+- **Not built from the "full logistics" list yet:** underground belts, item filters, priority
+  splitters, pipes and fluids, blueprints, the logic network, modules.
 - **Buildings cost nothing** to place until recipes exist.
 - **Tech tree**: one placeholder tech (`first_contact`). The real tier × branch chart needs owner approval.
 - **No ground items**: inventory overflow (e.g. removing a full chest with a full inventory) is lost.

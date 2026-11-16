@@ -76,6 +76,20 @@ Buildings cost materials straight out of your inventory when placed — there is
 "building item" to craft. **The logic circuit is a Claude invention to give the assembler a job;
 say the word and it goes, it is one line of JSON.** [PENDING owner approval]
 
+## 4d-3. Power beyond the pod, and the router (built 2026-11-16)
+The pod reactor decays to 10% over two hours, so it cannot carry a factory on its own.
+- **Coal burner** (2×2, 180 kW): burns coal, one piece lasting 120 ticks. Full output while alight,
+  nothing at all when the hopper runs dry.
+- **Wind turbine** (2×2, 30 kW): no fuel, never decays, deliberately weak — meant to be built in rows.
+- **Battery bank** (1×1): holds 150 M watt-ticks (5 MJ) and moves up to 60 kW either way. It absorbs
+  surplus and covers shortfalls so bursty demand stops stuttering.
+- Each tick: generators supply, then batteries charge from any surplus or discharge to cover a
+  deficit; satisfaction = (supply + battery) / demand.
+- **Router** (1×1): splits *and* merges belt lines. Anything may push items in from any side; it
+  sends each out to whichever neighbours will take it, taking turns, never back the way it came and
+  never into a belt that is pointing at it.
+[All BUILT and covered by sim tests; none of it seen on screen yet.]
+
 ## 4e. Rules built so far (Milestone 1) — all [BUILT, not owner-tested] unless marked
 - **Power:** wires and tubes are conductors and join each other side by side. Any other building joins a network when its footprint touches a conductor. Buildings do not pass power to each other directly. Each tick satisfaction = supply/demand (capped 100%); machines run at that speed. Pod reactor: 200 kW, decays to 10% over 2 hours. [PENDING approval of these rules]
 - **Logistics:** tubes carry items, data-wires carry data cells, 4 per tile, 1 tile per 8 ticks. Items hold when a tube is unpowered; wires never need power. Head-on conveyors do not connect. Arms occupy **one tile** and move items between **any two of their four neighbours** (no diagonals): the player clicks the arm and picks an input tile then an output tile, and the item visibly flies across. 10 ticks per trip. Placing one wires it behind→front by default so belt-building stays quick. One sprite, no facing. [DECIDED 2026-11-14, replaces the 2026-11-12 oversized-sprite design]
@@ -91,7 +105,7 @@ say the word and it goes, it is one line of JSON.** [PENDING owner approval]
 ## 5. Art
 - **64×64 px tiles**, 3/4 top-down, Pixels Per Unit 64, point filtering. [DECIDED — briefly 128 on 2026-11-09, reverted to 64 on 2026-11-10]
 - Tool: Pixelorama. Pipeline and naming: see `ART_GUIDE.md`. [DECIDED]
-- **Division of art labour [DECIDED 2026-11-16]:** owner draws the buildings, the UI/HUD and the faction-leader call screens. Claude makes everything else (terrain, player, items, ore, belts, wires, arm, icons, effects) plus stand-in buildings. Owner art always overrides Claude's.
+- **Division of art labour [DECIDED 2026-11-16]:** owner draws the **buildings, the conveyors/wires, the player, the UI/HUD and the faction-leader call screens**. Claude makes **terrain, items, ore patches, data cells, HUD icons, effects and the shared damaged/destroyed art**, plus stand-ins for everything in the owner's list. Owner art always overrides Claude's.
 - Import pipeline: PNGs in `Assets/Art/Sprites` (owner), `Assets/Art/Generated` (Claude-made art) and `Assets/Art/_Placeholders` are auto-imported (point filter, uncompressed, 64 PPU). `_<N>f` suffix = N-frame horizontal sheet. A sprite registry maps names → sprites; priority owner > generated > placeholder, with no code changes. Buildings pivot bottom-left, everything else centre. [BUILT — owner-tested 2026-11-09: compiles, placeholders + override + animation slicing work]
 - Sprite list & sizes (building height = footprint + 32 px, items 32×32, player 3 directions with mirrored side): [DECIDED 2026-11-09]
 - Working-state glow via 2D light: [DECIDED — built later with the building system]
