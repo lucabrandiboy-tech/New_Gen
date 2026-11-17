@@ -151,7 +151,14 @@ the game looks finished today. The moment you put a file with the same name into
 instead — no code change, no asking. Priority is always: **your art > Claude's art > flat placeholder**.
 
 ### "Check"
-Say **"Check"** and Claude lists which of *your* files (buildings, UI, call screens) are still missing.
+Say **"Check"** and Claude lists which of *your* files are still missing. You can also run it
+yourself from the repo root — it reads the content files and the art folders and tells you exactly
+what the game would draw for every single thing:
+
+    python3 Tools/art/check_coverage.py
+
+It is also part of `bash Tools/check.sh`. It fails only if something would fall through to a plain
+coloured box; a stand-in by Claude counts as covered.
 
 ### Buildings still to draw — one `_idle` each
 | File | Size | Footprint |

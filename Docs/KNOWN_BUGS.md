@@ -2,6 +2,13 @@
 
 > Always current. **Nothing in this project has been run in Unity since the art-pipeline test on 2026-11-09.**
 
+## Status (2026-11-17)
+- **Nothing is a grey box.** `python3 Tools/art/check_coverage.py` confirms all 49 required
+  sprites exist: every building, belt, item, ore patch, terrain type, HUD icon and the player.
+  They are Claude's stand-ins, replaced the moment a file with the same name lands in
+  `Assets/Art/Sprites/`. The owner's drill left-output animation is already being used that way.
+- Still never played. The whole game remains unseen on screen.
+
 ## Status (2026-11-14)
 - **Making it playable without art**: any sprite that does not exist is now drawn as a plain coloured
   box of the correct size (`Assets/Scripts/Game/FallbackArt.cs`) — buildings, player, items, bullets,

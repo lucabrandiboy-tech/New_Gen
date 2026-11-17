@@ -5,6 +5,9 @@ fail=0
 echo "== simulation self-checks"
 dotnet run --project Tools/simtest || fail=1
 echo
+echo "== art coverage (is anything still a grey box?)"
+python3 Tools/art/check_coverage.py || fail=1
+echo
 echo "== compile check: runtime code (player build, UNITY_EDITOR off)"
 dotnet build Tools/unitycheck/unitycheck.csproj -v q --nologo || fail=1
 echo "== compile check: runtime + editor code (UNITY_EDITOR on)"
